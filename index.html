@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Pengusaha Ternakan - DVS Malaysia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dvs-blue: #003087;
+    --dvs-blue-light: #004DB3;
+    --dvs-blue-pale: #E8EEF8;
+    --dvs-green: #006B3F;
+    --dvs-green-light: #008A50;
+    --dvs-green-pale: #E6F4EE;
+    --dvs-gold: #FFB81C;
+    --dvs-gold-light: #FFD166;
+    --clay-bg: #EDE9E3;
+    --clay-surface: #F5F2EE;
+    --clay-white: #FDFCFB;
+    --clay-shadow-light: rgba(255,255,255,0.85);
+    --clay-shadow-dark: rgba(180,170,158,0.55);
+    --text-dark: #1A2340;
+    --text-mid: #3D4F6B;
+    --text-muted: #7A8BA0;
+    --radius-sm: 14px;
+    --radius-md: 20px;
+    --radius-lg: 28px;
+    --radius-xl: 36px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--clay-bg);
+    color: var(--text-dark);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(0,48,135,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(0,107,63,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 60% 10%, rgba(255,184,28,0.05) 0%, transparent 40%);
+  }
+
+  /* ===== CLAY MIXIN ===== */
+  .clay {
+    background: var(--clay-surface);
+    border-radius: var(--radius-lg);
+    box-shadow:
+      8px 8px 20px var(--clay-shadow-dark),
+      -4px -4px 12px var(--clay-shadow-light),
+      inset 0 1px 0 rgba(255,255,255,0.7);
+  }
+  .clay-inset {
+    background: var(--clay-bg);
+    border-radius: var(--radius-md);
+    box-shadow:
+      inset 4px 4px 10px var(--clay-shadow-dark),
+      inset -2px -2px 6px var(--clay-shadow-light);
+  }
+  .clay-btn {
+    border-radius: var(--radius-md);
+    box-shadow:
+      4px 4px 12px var(--clay-shadow-dark),
+      -2px -2px 8px var(--clay-shadow-light),
+      inset 0 1px 0 rgba(255,255,255,0.4);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .clay-btn:active {
+    box-shadow:
+      2px 2px 6px var(--clay-shadow-dark),
+      -1px -1px 4px var(--clay-shadow-light),
+      inset 2px 2px 6px rgba(0,0,0,0.1);
+    transform: translateY(1px);
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: var(--clay-surface);
+    box-shadow:
+      0 6px 20px var(--clay-shadow-dark),
+      0 -2px 0 rgba(255,255,255,0.8) inset;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    background: var(--dvs-blue);
+    padding: 6px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .header-top span {
+    color: rgba(255,255,255,0.85);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .header-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 32px;
+    gap: 16px;
+  }
+  .header-logos {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .header-logos img {
+    height: 58px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+  }
+  .header-divider {
+    width: 1.5px;
+    height: 48px;
+    background: linear-gradient(to bottom, transparent, var(--dvs-blue), transparent);
+    opacity: 0.25;
+  }
+  .header-title {
+    flex: 1;
+    text-align: center;
+  }
+  .header-title h1 {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--dvs-blue);
+    line-height: 1.25;
+  }
+  .header-title p {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  .header-nav {
+    display: flex;
+    gap: 8px;
+  }
+  .nav-btn {
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .nav-btn.active {
+    background: var(--dvs-blue);
+    color: white;
+    box-shadow: 3px 3px 8px rgba(0,48,135,0.35), -1px -1px 4px rgba(255,255,255,0.6);
+  }
+  .nav-btn.outline {
+    background: var(--clay-surface);
+    color: var(--dvs-blue);
+    box-shadow: 3px 3px 8px var(--clay-shadow-dark), -1px -1px 4px var(--clay-shadow-light);
+  }
+  .nav-btn.green {
+    background: var(--dvs-green);
+    color: white;
+    box-shadow: 3px 3px 8px rgba(0,107,63,0.35), -1px -1px 4px rgba(255,255,255,0.6);
+  }
+
+  /* ===== PAGES ===== */
+  .page { display: none; animation: fadeIn 0.35s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ===== LOGIN PAGE ===== */
+  .login-page {
+    min-height: calc(100vh - 130px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  .login-hero {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .login-hero .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--dvs-blue-pale);
+    color: var(--dvs-blue);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 40px;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 2px 2px 6px rgba(0,48,135,0.12), -1px -1px 4px rgba(255,255,255,0.8);
+  }
+  .login-hero h2 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-dark);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .login-hero h2 span { color: var(--dvs-green); }
+  .login-hero p {
+    font-size: 14.5px;
+    color: var(--text-muted);
+    font-weight: 500;
+    max-width: 380px;
+  }
+  .login-card {
+    width: 100%;
+    max-width: 440px;
+    padding: 36px;
+  }
+  .login-step { display: none; }
+  .login-step.active { display: block; }
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-mid);
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+  .form-input {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 500;
+    color: var(--text-dark);
+    border: none;
+    outline: none;
+    border-radius: var(--radius-md);
+    background: var(--clay-bg);
+    box-shadow:
+      inset 4px 4px 10px rgba(180,170,158,0.5),
+      inset -2px -2px 6px rgba(255,255,255,0.8);
+    transition: box-shadow 0.2s;
+  }
+  .form-input:focus {
+    box-shadow:
+      inset 4px 4px 10px rgba(180,170,158,0.5),
+      inset -2px -2px 6px rgba(255,255,255,0.8),
+      0 0 0 3px rgba(0,48,135,0.18);
+  }
+  .form-input::placeholder { color: var(--text-muted); font-weight: 400; }
+  .btn-primary {
+    width: 100%;
+    padding: 15px;
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    background: var(--dvs-blue);
+    margin-top: 20px;
+  }
+  .btn-primary:hover { background: var(--dvs-blue-light); }
+  .btn-green {
+    width: 100%;
+    padding: 15px;
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    background: var(--dvs-green);
+    margin-top: 20px;
+  }
+  .btn-green:hover { background: var(--dvs-green-light); }
+  .otp-grid {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 8px 0;
+  }
+  .otp-input {
+    width: 52px;
+    height: 60px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--dvs-blue);
+    border: none;
+    outline: none;
+    border-radius: var(--radius-md);
+    background: var(--clay-bg);
+    box-shadow:
+      inset 4px 4px 10px rgba(180,170,158,0.5),
+      inset -2px -2px 6px rgba(255,255,255,0.8);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .otp-input:focus {
+    box-shadow:
+      inset 4px 4px 10px rgba(180,170,158,0.5),
+      inset -2px -2px 6px rgba(255,255,255,0.8),
+      0 0 0 3px rgba(0,48,135,0.2);
+  }
+  .login-divider {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .login-divider::before, .login-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 38%;
+    height: 1px;
+    background: rgba(0,0,0,0.1);
+  }
+  .login-divider::before { left: 0; }
+  .login-divider::after { right: 0; }
+  .info-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--dvs-blue-pale);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin-top: 16px;
+    font-size: 12.5px;
+    color: var(--dvs-blue);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  .info-note svg { flex-shrink: 0; margin-top: 1px; }
+  .otp-demo {
+    background: linear-gradient(135deg, #fff9e6, #fffdf5);
+    border: 1.5px solid var(--dvs-gold);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: 13px;
+    color: #7a5c00;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 2px 2px 8px rgba(255,184,28,0.2);
+  }
+
+  /* ===== DASHBOARD ===== */
+  .dashboard-page { padding: 28px 24px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .section-title h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-dark);
+  }
+  .section-title p {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 20px;
+  }
+  .stat-icon.blue { background: var(--dvs-blue-pale); }
+  .stat-icon.green { background: var(--dvs-green-pale); }
+  .stat-icon.gold { background: #FFF7E0; }
+  .stat-icon.teal { background: #E0F5F0; }
+  .stat-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text-dark);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+  .search-wrap {
+    flex: 1;
+    min-width: 220px;
+    position: relative;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+  }
+  .search-input {
+    width: 100%;
+    padding: 11px 14px 11px 42px;
+    font-size: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 500;
+    color: var(--text-dark);
+    border: none;
+    outline: none;
+    border-radius: var(--radius-sm);
+    background: var(--clay-bg);
+    box-shadow:
+      inset 3px 3px 8px rgba(180,170,158,0.45),
+      inset -2px -2px 5px rgba(255,255,255,0.8);
+  }
+  .filter-select {
+    padding: 11px 16px;
+    font-size: 13px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    color: var(--text-mid);
+    border: none;
+    outline: none;
+    border-radius: var(--radius-sm);
+    background: var(--clay-surface);
+    cursor: pointer;
+    box-shadow: 3px 3px 8px var(--clay-shadow-dark), -1px -1px 4px var(--clay-shadow-light);
+  }
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    box-shadow:
+      8px 8px 20px var(--clay-shadow-dark),
+      -4px -4px 12px var(--clay-shadow-light),
+      inset 0 1px 0 rgba(255,255,255,0.7);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--clay-surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    min-width: 700px;
+  }
+  thead tr {
+    background: var(--dvs-blue);
+  }
+  th {
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  tbody tr {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    transition: background 0.15s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(0,48,135,0.04); }
+  td {
+    padding: 13px 16px;
+    font-size: 13.5px;
+    color: var(--text-dark);
+    font-weight: 500;
+    vertical-align: middle;
+  }
+  .td-name { font-weight: 700; color: var(--dvs-blue); }
+  .badge-type {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 40px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .badge-ayam { background: #FFF0E0; color: #B05A00; }
+  .badge-itik { background: #E0F0FF; color: #004499; }
+  .badge-kambing { background: #E0FFE8; color: #006622; }
+  .badge-lembu { background: #FFF0F0; color: #AA0000; }
+  .badge-lain { background: #F0E8FF; color: #550099; }
+  .fb-link {
+    color: #1877F2;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .fb-link:hover { text-decoration: underline; }
+  .wa-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #25D366;
+    color: white;
+    padding: 5px 11px;
+    border-radius: 40px;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 1px 2px 5px rgba(37,211,102,0.3);
+  }
+  .no-data {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .no-data svg { margin-bottom: 12px; opacity: 0.4; }
+  .no-data p { font-size: 14px; font-weight: 500; }
+
+  /* ===== FORM PAGE ===== */
+  .form-page { padding: 28px 24px 60px; max-width: 760px; margin: 0 auto; }
+  .form-card { padding: 36px 40px; }
+  .form-card h2 { font-size: 22px; font-weight: 800; color: var(--text-dark); margin-bottom: 6px; }
+  .form-card > p { font-size: 14px; color: var(--text-muted); font-weight: 500; margin-bottom: 28px; line-height: 1.5; }
+  .form-row { margin-bottom: 20px; }
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .form-select {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 500;
+    color: var(--text-dark);
+    border: none;
+    outline: none;
+    border-radius: var(--radius-md);
+    background: var(--clay-bg);
+    box-shadow:
+      inset 4px 4px 10px rgba(180,170,158,0.5),
+      inset -2px -2px 6px rgba(255,255,255,0.8);
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237A8BA0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    cursor: pointer;
+  }
+  .form-select:focus {
+    box-shadow:
+      inset 4px 4px 10px rgba(180,170,158,0.5),
+      inset -2px -2px 6px rgba(255,255,255,0.8),
+      0 0 0 3px rgba(0,107,63,0.18);
+  }
+  .checkbox-area {
+    background: var(--dvs-green-pale);
+    border: 1.5px solid rgba(0,107,63,0.2);
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    cursor: pointer;
+  }
+  .checkbox-area input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    accent-color: var(--dvs-green);
+    cursor: pointer;
+    margin-top: 2px;
+  }
+  .checkbox-area label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--dvs-green);
+    line-height: 1.55;
+    cursor: pointer;
+  }
+  .success-msg {
+    display: none;
+    background: var(--dvs-green-pale);
+    border: 2px solid var(--dvs-green);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    text-align: center;
+    margin-top: 20px;
+  }
+  .success-msg .check-circle {
+    width: 56px;
+    height: 56px;
+    background: var(--dvs-green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    box-shadow: 0 4px 14px rgba(0,107,63,0.35);
+  }
+  .success-msg h3 { font-size: 18px; font-weight: 800; color: var(--dvs-green); margin-bottom: 6px; }
+  .success-msg p { font-size: 13.5px; color: var(--text-mid); font-weight: 500; }
+  .required-star { color: #CC0000; margin-left: 2px; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--dvs-blue);
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    padding: 20px;
+    font-size: 12.5px;
+    font-weight: 500;
+    line-height: 1.7;
+    margin-top: 20px;
+  }
+  footer strong { color: var(--dvs-gold); font-weight: 700; }
+  footer span { display: block; font-size: 11px; opacity: 0.6; margin-top: 3px; }
+
+  /* ===== LOADING SPINNER ===== */
+  .spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--text-dark);
+    color: white;
+    padding: 14px 20px;
+    border-radius: var(--radius-md);
+    font-size: 13.5px;
+    font-weight: 600;
+    z-index: 9999;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    animation: slideUp 0.3s ease;
+    max-width: 320px;
+  }
+  .toast.success { background: var(--dvs-green); }
+  .toast.error { background: #CC2200; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 600px) {
+    .header-main { padding: 10px 16px; flex-wrap: wrap; }
+    .header-logos img { height: 44px; }
+    .header-title h1 { font-size: 13px; }
+    .form-row-2 { grid-template-columns: 1fr; }
+    .form-card { padding: 24px 20px; }
+    .login-card { padding: 24px 20px; }
+    .login-hero h2 { font-size: 24px; }
+    .nav-btn { padding: 8px 12px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="header-top">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    <span>Kementerian Pertanian & Keterjaminan Makanan Malaysia</span>
+  </div>
+  <div class="header-main">
+    <div class="header-logos">
+      <img src="https://i.ibb.co/QvRWvqmk/1-Jata-KPKM.png" alt="Jata KPKM" onerror="this.style.display='none'">
+      <div class="header-divider"></div>
+      <img src="https://i.ibb.co/XfcvhqxC/2-Logo-DVS.png" alt="Logo DVS" onerror="this.style.display='none'">
+    </div>
+    <div class="header-title">
+      <h1>Portal Direktori Pengusaha Ternakan</h1>
+      <p>Jabatan Perkhidmatan Veterinar Malaysia</p>
+    </div>
+    <div class="header-nav" id="headerNav" style="display:none;">
+      <button class="nav-btn active" onclick="showPage('dashboard')">🐄 Direktori</button>
+      <button class="nav-btn green" onclick="showPage('daftar')">✏️ Daftar</button>
+      <button class="nav-btn outline" onclick="doLogout()">Keluar</button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div id="page-login" class="page active">
+  <div class="login-page">
+    <div class="login-hero">
+      <div class="badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Portal Rasmi DVS Malaysia
+      </div>
+      <h2>Selamat Datang ke<br><span>Direktori Pengusaha</span></h2>
+      <p>Log masuk untuk mengakses dan menyumbang kepada direktori pengusaha ternakan Malaysia.</p>
+    </div>
+
+    <div class="login-card clay">
+
+      <!-- STEP 1: EMAIL -->
+      <div class="login-step active" id="step-email">
+        <label class="form-label">Alamat E-mel</label>
+        <input class="form-input" type="email" id="emailInput" placeholder="contoh@email.com" autocomplete="email">
+
+        <div class="info-note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Kod OTP 6 digit akan dihantar ke e-mel anda untuk pengesahan identiti.
+        </div>
+
+        <button class="clay-btn btn-primary" onclick="sendOTP()">
+          Hantar Kod OTP
+        </button>
+        <div class="login-divider">atau akses sebagai tetamu</div>
+        <button class="clay-btn" style="width:100%;padding:13px;font-size:14px;font-weight:600;color:var(--dvs-green);background:var(--dvs-green-pale);" onclick="guestLogin()">
+          Lihat Direktori Tanpa Log Masuk
+        </button>
+      </div>
+
+      <!-- STEP 2: OTP -->
+      <div class="login-step" id="step-otp">
+        <div style="text-align:center;margin-bottom:20px;">
+          <div style="width:56px;height:56px;background:var(--dvs-blue-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:3px 3px 8px rgba(0,48,135,0.15),-1px -1px 5px rgba(255,255,255,0.8);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--dvs-blue)" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <p style="font-size:13.5px;color:var(--text-mid);font-weight:500;line-height:1.5;">Kod OTP 6 digit telah dihantar ke<br><strong id="emailDisplay" style="color:var(--dvs-blue);"></strong></p>
+        </div>
+
+        <label class="form-label" style="text-align:center;">Masukkan Kod OTP</label>
+        <div class="otp-grid">
+          <input class="otp-input" type="tel" maxlength="1" id="otp0" oninput="otpNext(this,0)">
+          <input class="otp-input" type="tel" maxlength="1" id="otp1" oninput="otpNext(this,1)">
+          <input class="otp-input" type="tel" maxlength="1" id="otp2" oninput="otpNext(this,2)">
+          <input class="otp-input" type="tel" maxlength="1" id="otp3" oninput="otpNext(this,3)">
+          <input class="otp-input" type="tel" maxlength="1" id="otp4" oninput="otpNext(this,4)">
+          <input class="otp-input" type="tel" maxlength="1" id="otp5" oninput="otpNext(this,5)">
+        </div>
+
+        <div class="otp-demo" id="otpDemo">
+          🔐 Mod Demo — Kod OTP anda: <strong id="demoCode">------</strong>
+        </div>
+
+        <button class="clay-btn btn-primary" onclick="verifyOTP()">
+          Sahkan & Log Masuk
+        </button>
+        <button style="width:100%;margin-top:10px;padding:10px;background:none;border:none;color:var(--text-muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;" onclick="backToEmail()">
+          ← Tukar E-mel
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD PAGE ===== -->
+<div id="page-dashboard" class="page">
+  <div class="dashboard-page">
+    <div class="section-header">
+      <div class="section-title">
+        <h2>📋 Direktori Pengusaha Ternakan Malaysia</h2>
+        <p>Data dikemas kini secara langsung dari sumber. Tatapan umum untuk hebahan & networking.</p>
+      </div>
+      <button class="nav-btn green clay-btn" style="padding:10px 20px;font-size:13px;" onclick="loadSheetData()">
+        ↻ Muat Semula
+      </button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card clay">
+        <div class="stat-icon blue">🏭</div>
+        <div class="stat-num" id="statTotal">—</div>
+        <div class="stat-label">Jumlah Pengusaha</div>
+      </div>
+      <div class="stat-card clay">
+        <div class="stat-icon green">🐔</div>
+        <div class="stat-num" id="statAyam">—</div>
+        <div class="stat-label">Ternakan Ayam</div>
+      </div>
+      <div class="stat-card clay">
+        <div class="stat-icon gold">🦆</div>
+        <div class="stat-num" id="statItik">—</div>
+        <div class="stat-label">Ternakan Itik</div>
+      </div>
+      <div class="stat-card clay">
+        <div class="stat-icon teal">🗺️</div>
+        <div class="stat-num" id="statNegeri">—</div>
+        <div class="stat-label">Negeri Terlibat</div>
+      </div>
+    </div>
+
+    <!-- FILTER -->
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-input" type="text" id="searchInput" placeholder="Cari nama, lokasi, jenis perusahaan..." oninput="filterTable()">
+      </div>
+      <select class="filter-select" id="filterNegeri" onchange="filterTable()">
+        <option value="">Semua Negeri</option>
+        <option>Johor</option><option>Kedah</option><option>Kelantan</option>
+        <option>Melaka</option><option>Negeri Sembilan</option><option>Pahang</option>
+        <option>Perak</option><option>Perlis</option><option>Pulau Pinang</option>
+        <option>Sabah</option><option>Sarawak</option><option>Selangor</option>
+        <option>Terengganu</option><option>W.P. Kuala Lumpur</option><option>W.P. Labuan</option><option>W.P. Putrajaya</option>
+      </select>
+      <select class="filter-select" id="filterJenis" onchange="filterTable()">
+        <option value="">Semua Jenis</option>
+        <option>Ternakan Ayam</option><option>Ternakan Itik</option>
+        <option>Ternakan Kambing</option><option>Ternakan Lembu</option>
+        <option>Akuakultur</option><option>Lebah Madu</option><option>Lain-lain</option>
+      </select>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nama / Syarikat / Ladang</th>
+            <th>Jenis Perusahaan</th>
+            <th>Negeri</th>
+            <th>Lokasi Ladang</th>
+            <th>WhatsApp</th>
+            <th>Facebook</th>
+            <th>Tarikh Daftar</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="8"><div class="no-data"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>Klik "Muat Semula" untuk mendapatkan data terkini</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:12px;text-align:right;">* Hanya rekod yang bersetuju dikongsikan ditunjukkan</p>
+  </div>
+</div>
+
+<!-- ===== FORM PAGE ===== -->
+<div id="page-daftar" class="page">
+  <div class="form-page">
+    <div class="form-card clay">
+      <h2>✏️ Borang Pendaftaran Pengusaha</h2>
+      <p>Daftarkan maklumat perusahaan anda untuk dikongsikan dalam direktori pengusaha ternakan Malaysia. Semua maklumat yang dihantar akan disemak sebelum dipaparkan.</p>
+
+      <div class="form-row">
+        <label class="form-label">Nama Individu, Syarikat atau Ladang <span class="required-star">*</span></label>
+        <input class="form-input" type="text" id="f_nama" placeholder="contoh: Ladang Ayam Maju Jaya Sdn Bhd">
+      </div>
+
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">No. Telefon (WhatsApp) <span class="required-star">*</span></label>
+          <input class="form-input" type="tel" id="f_telefon" placeholder="01X-XXXXXXXX">
+        </div>
+        <div>
+          <label class="form-label">Negeri <span class="required-star">*</span></label>
+          <select class="form-select" id="f_negeri">
+            <option value="">— Pilih Negeri —</option>
+            <option>Johor</option><option>Kedah</option><option>Kelantan</option>
+            <option>Melaka</option><option>Negeri Sembilan</option><option>Pahang</option>
+            <option>Perak</option><option>Perlis</option><option>Pulau Pinang</option>
+            <option>Sabah</option><option>Sarawak</option><option>Selangor</option>
+            <option>Terengganu</option><option>W.P. Kuala Lumpur</option>
+            <option>W.P. Labuan</option><option>W.P. Putrajaya</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label">Lokasi Ladang (Alamat Penuh / Mukim / Daerah) <span class="required-star">*</span></label>
+        <input class="form-input" type="text" id="f_lokasi" placeholder="contoh: Mukim Batu Kikir, Daerah Jempol, Negeri Sembilan">
+      </div>
+
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Jenis Perusahaan <span class="required-star">*</span></label>
+          <select class="form-select" id="f_jenis">
+            <option value="">— Pilih Jenis —</option>
+            <option>Ternakan Ayam</option>
+            <option>Ternakan Itik</option>
+            <option>Ternakan Kambing</option>
+            <option>Ternakan Lembu</option>
+            <option>Ternakan Babi</option>
+            <option>Akuakultur (Ikan/Udang)</option>
+            <option>Lebah Madu</option>
+            <option>Ternakan Rusa</option>
+            <option>Ternakan Burung</option>
+            <option>Pertanian Campur</option>
+            <option>Lain-lain</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Alamat E-mel <span class="required-star">*</span></label>
+          <input class="form-input" type="email" id="f_email" placeholder="email@ladang.com">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label">Facebook URL Ladang atau Peribadi</label>
+        <input class="form-input" type="url" id="f_fb" placeholder="https://www.facebook.com/namaladang">
+      </div>
+
+      <div class="checkbox-area" onclick="toggleConsent()">
+        <input type="checkbox" id="f_setuju">
+        <label for="f_setuju">
+          <strong>Saya SETUJU</strong> maklumat perusahaan saya dikongsikan kepada umum untuk tujuan hebahan dan networking dalam Portal Direktori Pengusaha Ternakan DVS Malaysia. Saya faham maklumat ini akan kelihatan kepada orang awam.
+        </label>
+      </div>
+
+      <button class="clay-btn btn-green" onclick="submitForm()">
+        📤 Hantar Maklumat Perusahaan
+      </button>
+
+      <div class="success-msg" id="successMsg">
+        <div class="check-circle">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3>Maklumat Berjaya Dihantar!</h3>
+        <p>Terima kasih kerana mendaftar. Maklumat anda akan disemak dan dipaparkan dalam direktori dalam masa 1-2 hari bekerja.</p>
+      </div>
+
+    </div>
+
+    <div style="margin-top:16px;padding:16px 20px;border-radius:var(--radius-md);background:var(--dvs-blue-pale);">
+      <p style="font-size:12.5px;color:var(--dvs-blue);font-weight:600;line-height:1.6;">
+        🔒 <strong>Perlindungan Data:</strong> Maklumat anda dilindungi di bawah Akta Perlindungan Data Peribadi 2010. Nombor telefon anda tidak akan dikongsi melainkan anda membenarkan. Untuk pertanyaan, hubungi DVS Malaysia.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <strong>Copyright © 2026 — Portal Direktori Pengusaha Ternakan DVS Malaysia</strong>
+  <span>Inisiatif Institut Teknologi Unggas 2026 &nbsp;|&nbsp; Jabatan Perkhidmatan Veterinar Malaysia &nbsp;|&nbsp; Kementerian Pertanian & Keterjaminan Makanan</span>
+</footer>
+
+<script>
+// ===== STATE =====
+let currentOTP = '';
+let isLoggedIn = false;
+let allData = [];
+let filteredData = [];
+
+// ===== SHEET CONFIG =====
+const SHEET_ID = '1YKzqywmFj9cu0uYQhVGIndmnL4roYV3gYIe4OXoCxL0';
+const GID = '1096494187';
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+
+// ===== AUTH =====
+function sendOTP() {
+  const email = document.getElementById('emailInput').value.trim();
+  if (!email || !email.includes('@')) {
+    showToast('Sila masukkan alamat e-mel yang sah.', 'error');
+    return;
+  }
+  currentOTP = Math.floor(100000 + Math.random() * 900000).toString();
+  document.getElementById('emailDisplay').textContent = email;
+  document.getElementById('demoCode').textContent = currentOTP;
+  document.getElementById('step-email').classList.remove('active');
+  document.getElementById('step-otp').classList.add('active');
+  document.getElementById('otp0').focus();
+  showToast('Kod OTP telah dihantar! (Lihat kod demo di bawah)', 'success');
+}
+
+function otpNext(el, idx) {
+  el.value = el.value.replace(/[^0-9]/g, '');
+  if (el.value && idx < 5) {
+    document.getElementById('otp' + (idx + 1)).focus();
+  }
+  if (idx === 5 && el.value) {
+    let code = '';
+    for (let i = 0; i < 6; i++) code += (document.getElementById('otp' + i).value || '');
+    if (code.length === 6) setTimeout(verifyOTP, 300);
+  }
+}
+
+function verifyOTP() {
+  let entered = '';
+  for (let i = 0; i < 6; i++) entered += (document.getElementById('otp' + i).value || '');
+  if (entered.length < 6) { showToast('Sila lengkapkan 6 digit kod OTP.', 'error'); return; }
+  if (entered === currentOTP) {
+    isLoggedIn = true;
+    document.getElementById('headerNav').style.display = 'flex';
+    showPage('dashboard');
+    loadSheetData();
+    showToast('Log masuk berjaya! Selamat datang.', 'success');
+  } else {
+    showToast('Kod OTP tidak sah. Cuba semula.', 'error');
+    for (let i = 0; i < 6; i++) document.getElementById('otp' + i).value = '';
+    document.getElementById('otp0').focus();
+  }
+}
+
+function backToEmail() {
+  document.getElementById('step-otp').classList.remove('active');
+  document.getElementById('step-email').classList.add('active');
+  for (let i = 0; i < 6; i++) document.getElementById('otp' + i).value = '';
+}
+
+function guestLogin() {
+  document.getElementById('headerNav').style.display = 'flex';
+  showPage('dashboard');
+  loadSheetData();
+  showToast('Anda melayari sebagai tetamu.', 'success');
+}
+
+function doLogout() {
+  isLoggedIn = false;
+  document.getElementById('headerNav').style.display = 'none';
+  document.getElementById('emailInput').value = '';
+  document.getElementById('step-otp').classList.remove('active');
+  document.getElementById('step-email').classList.add('active');
+  for (let i = 0; i < 6; i++) document.getElementById('otp' + i).value = '';
+  showPage('login');
+}
+
+// ===== NAVIGATION =====
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (name === 'dashboard') document.querySelectorAll('.nav-btn')[0]?.classList.add('active');
+  if (name === 'daftar') document.querySelectorAll('.nav-btn')[1]?.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ===== LOAD SHEET DATA =====
+function loadSheetData() {
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted);font-weight:600;font-size:14px;"><span class="spinner"></span>Memuatkan data...</td></tr>`;
+
+  const script = document.createElement('script');
+  script.src = SHEET_URL + '&callback=handleSheetData&t=' + Date.now();
+  script.onerror = () => {
+    loadDemoData();
+  };
+  document.head.appendChild(script);
+  setTimeout(() => { if (allData.length === 0) loadDemoData(); }, 5000);
+}
+
+function handleSheetData(data) {
+  try {
+    const rows = data.table.rows;
+    allData = [];
+    rows.forEach(row => {
+      if (!row || !row.c) return;
+      const get = (i) => (row.c[i] && row.c[i].v !== null && row.c[i].v !== undefined) ? String(row.c[i].v).trim() : '';
+      const setuju = get(8).toUpperCase();
+      if (!setuju.includes('SETUJU') && !setuju.includes('YA') && !setuju.includes('YES') && !setuju.includes('TRUE')) return;
+      const nama = get(1);
+      if (!nama) return;
+      allData.push({
+        timestamp: get(0),
+        nama: nama,
+        telefon: get(2),
+        negeri: get(3),
+        lokasi: get(4),
+        facebook: get(5),
+        email: get(6),
+        jenis: get(7),
+        setuju: setuju
+      });
+    });
+    filteredData = [...allData];
+    renderTable();
+    updateStats();
+  } catch(e) {
+    loadDemoData();
+  }
+}
+
+function loadDemoData() {
+  allData = [
+    { timestamp:'5/1/2025 09:12', nama:'Ladang Ayam Maju Jaya Sdn Bhd', telefon:'012-3456789', negeri:'Selangor', lokasi:'Mukim Batang Kali, Hulu Selangor', facebook:'https://facebook.com/ladangmajujaya', email:'maju@ladang.com', jenis:'Ternakan Ayam', setuju:'SETUJU' },
+    { timestamp:'5/3/2025 11:30', nama:'Peternakan Itik Muda Belia Enterprise', telefon:'017-8901234', negeri:'Kedah', lokasi:'Mukim Pendang, Daerah Pendang', facebook:'', email:'itik.muda@gmail.com', jenis:'Ternakan Itik', setuju:'SETUJU' },
+    { timestamp:'5/8/2025 14:20', nama:'Ahmad Fadzil bin Ismail', telefon:'019-2345678', negeri:'Johor', lokasi:'Felda Kahang Barat, Kluang', facebook:'https://facebook.com/fadzil.ladang', email:'fadzil@email.com', jenis:'Ternakan Kambing', setuju:'SETUJU' },
+    { timestamp:'5/12/2025 09:45', nama:'Syarikat Ternakan KL Maju', telefon:'011-12345678', negeri:'W.P. Kuala Lumpur', lokasi:'Taman Pertanian, Bukit Jalil', facebook:'https://facebook.com/klmaju', email:'klmaju@ternakan.my', jenis:'Akuakultur (Ikan/Udang)', setuju:'SETUJU' },
+    { timestamp:'5/15/2025 16:10', nama:'Ladang Lembu Siti Norzalika', telefon:'013-7654321', negeri:'Kelantan', lokasi:'Pasir Tumboh, Kota Bharu', facebook:'', email:'siti.norzalika@gmail.com', jenis:'Ternakan Lembu', setuju:'SETUJU' },
+    { timestamp:'5/18/2025 10:30', nama:'Green Farm Poultry Sdn Bhd', telefon:'016-4567890', negeri:'Perak', lokasi:'Bidor, Daerah Batang Padang', facebook:'https://facebook.com/greenfarmperak', email:'greenfarm@poultry.com', jenis:'Ternakan Ayam', setuju:'SETUJU' },
+    { timestamp:'5/22/2025 13:15', nama:'Lebah Madu Asli Borneo', telefon:'082-456789', negeri:'Sarawak', lokasi:'Bau, Bahagian Kuching', facebook:'https://facebook.com/lebahmadusarawak', email:'madusarawak@gmail.com', jenis:'Lebah Madu', setuju:'SETUJU' },
+    { timestamp:'6/1/2025 08:45', nama:'Mukhriz Ternakan Enterprise', telefon:'014-9012345', negeri:'Pahang', lokasi:'Kuala Lipis, Pahang', facebook:'', email:'mukhriz@ternakan.com', jenis:'Ternakan Kambing', setuju:'SETUJU' },
+  ];
+  filteredData = [...allData];
+  renderTable();
+  updateStats();
+  showToast('Menunjukkan data contoh (spreadsheet perlu dikongsi secara awam)', 'success');
+}
+
+function renderTable() {
+  const tbody = document.getElementById('tableBody');
+  if (filteredData.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="no-data"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><p>Tiada rekod dijumpai untuk carian ini</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filteredData.map((r, i) => {
+    const badgeClass = getBadgeClass(r.jenis);
+    const waNum = r.telefon.replace(/[^0-9]/g, '');
+    const waLink = waNum ? `<a class="wa-btn" href="https://wa.me/6${waNum.startsWith('0') ? waNum.substring(1) : waNum}" target="_blank">💬 ${r.telefon}</a>` : `<span style="color:var(--text-muted);font-size:12px;">—</span>`;
+    const fbLink = r.facebook ? `<a class="fb-link" href="${r.facebook}" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="#1877F2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>Buka</a>` : `<span style="color:var(--text-muted);font-size:12px;">—</span>`;
+    const date = r.timestamp ? r.timestamp.split(' ')[0] : '—';
+    return `<tr>
+      <td style="color:var(--text-muted);font-size:12px;font-weight:600;">${i+1}</td>
+      <td class="td-name">${r.nama}</td>
+      <td><span class="badge-type ${badgeClass}">${r.jenis || '—'}</span></td>
+      <td>${r.negeri || '—'}</td>
+      <td style="font-size:12.5px;color:var(--text-mid);max-width:160px;">${r.lokasi || '—'}</td>
+      <td>${waLink}</td>
+      <td>${fbLink}</td>
+      <td style="font-size:12px;color:var(--text-muted);">${date}</td>
+    </tr>`;
+  }).join('');
+}
+
+function getBadgeClass(jenis) {
+  if (!jenis) return 'badge-lain';
+  jenis = jenis.toLowerCase();
+  if (jenis.includes('ayam')) return 'badge-ayam';
+  if (jenis.includes('itik')) return 'badge-itik';
+  if (jenis.includes('kambing')) return 'badge-kambing';
+  if (jenis.includes('lembu')) return 'badge-lembu';
+  return 'badge-lain';
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = allData.length;
+  document.getElementById('statAyam').textContent = allData.filter(r => r.jenis && r.jenis.toLowerCase().includes('ayam')).length;
+  document.getElementById('statItik').textContent = allData.filter(r => r.jenis && (r.jenis.toLowerCase().includes('itik') || r.jenis.toLowerCase().includes('burung'))).length;
+  const negeri = new Set(allData.map(r => r.negeri).filter(Boolean));
+  document.getElementById('statNegeri').textContent = negeri.size;
+}
+
+function filterTable() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const negeri = document.getElementById('filterNegeri').value;
+  const jenis = document.getElementById('filterJenis').value;
+  filteredData = allData.filter(r => {
+    const matchQ = !q || [r.nama,r.lokasi,r.jenis,r.negeri].some(v => v && v.toLowerCase().includes(q));
+    const matchN = !negeri || r.negeri === negeri;
+    const matchJ = !jenis || r.jenis === jenis;
+    return matchQ && matchN && matchJ;
+  });
+  renderTable();
+}
+
+// ===== FORM =====
+function toggleConsent() {
+  const cb = document.getElementById('f_setuju');
+  cb.checked = !cb.checked;
+}
+
+function submitForm() {
+  const nama = document.getElementById('f_nama').value.trim();
+  const telefon = document.getElementById('f_telefon').value.trim();
+  const negeri = document.getElementById('f_negeri').value;
+  const lokasi = document.getElementById('f_lokasi').value.trim();
+  const jenis = document.getElementById('f_jenis').value;
+  const email = document.getElementById('f_email').value.trim();
+  const setuju = document.getElementById('f_setuju').checked;
+
+  if (!nama || !telefon || !negeri || !lokasi || !jenis || !email) {
+    showToast('Sila lengkapkan semua medan bertanda (*).', 'error'); return;
+  }
+  if (!setuju) {
+    showToast('Sila bersetuju dengan syarat perkongsian maklumat.', 'error'); return;
+  }
+
+  const btn = document.querySelector('#page-daftar .btn-green');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Menghantar...';
+
+  // Submit to Google Sheets via fetch (for connected sheets with Apps Script)
+  const formData = {
+    timestamp: new Date().toLocaleString('ms-MY'),
+    nama, telefon, negeri, lokasi,
+    facebook: document.getElementById('f_fb').value.trim(),
+    email, jenis,
+    setuju: 'SETUJU'
+  };
+
+  // Simulate submit (replace with actual Apps Script Web App URL)
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.innerHTML = '📤 Hantar Maklumat Perusahaan';
+    document.getElementById('successMsg').style.display = 'block';
+    ['f_nama','f_telefon','f_lokasi','f_fb','f_email'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f_negeri').value = '';
+    document.getElementById('f_jenis').value = '';
+    document.getElementById('f_setuju').checked = false;
+    showToast('Maklumat berjaya dihantar!', 'success');
+    setTimeout(() => document.getElementById('successMsg').style.display = 'none', 6000);
+  }, 1800);
+}
+
+// ===== TOAST =====
+function showToast(msg, type='') {
+  const old = document.querySelector('.toast');
+  if (old) old.remove();
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+// ===== INIT =====
+window.addEventListener('load', () => {
+  document.getElementById('emailInput').focus();
+});
+</script>
+</body>
+</html>
