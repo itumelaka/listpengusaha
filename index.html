@@ -1214,8 +1214,15 @@ function submitForm() {
     setuju: 'SETUJU'
   };
 
-  // Simulate submit (replace with actual Apps Script Web App URL)
-  setTimeout(() => {
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbx1gi7in8JLjUASuUTonA5cF8HCy53aMl55mZK2fgOjwCGGSzk4cvHVrl3KZUgs-6-a/exec';
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData)
+  })
+  .then(() => {
     btn.disabled = false;
     btn.innerHTML = '📤 Hantar Maklumat Perusahaan';
     document.getElementById('successMsg').style.display = 'block';
@@ -1223,9 +1230,14 @@ function submitForm() {
     document.getElementById('f_negeri').value = '';
     document.getElementById('f_jenis').value = '';
     document.getElementById('f_setuju').checked = false;
-    showToast('Maklumat berjaya dihantar!', 'success');
+    showToast('Maklumat berjaya dihantar ke spreadsheet!', 'success');
     setTimeout(() => document.getElementById('successMsg').style.display = 'none', 6000);
-  }, 1800);
+  })
+  .catch(() => {
+    btn.disabled = false;
+    btn.innerHTML = '📤 Hantar Maklumat Perusahaan';
+    showToast('Ralat sambungan. Cuba semula.', 'error');
+  });
 }
 
 // ===== TOAST =====
