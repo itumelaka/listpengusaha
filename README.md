@@ -30,9 +30,24 @@ Live demo: https://itumelaka.github.io/listpengusaha/
 | Admin approve / reject / bulk approve | Siap |
 | Export CSV dan PDF | Siap |
 | Frontend hardening untuk XSS/link luar | Siap |
+| Paparan mobile responsif untuk header, hero, kad info, filter, dan jadual | Siap |
 
 Nota peta: marker semasa diplot pada titik negeri kerana data asal belum ada latitude/longitude ladang. Untuk plot lokasi ladang sebenar, tambah kolum Latitude dan Longitude dalam sheet approved/public.
 
+---
+
+## Status Terkini
+
+Kemas kini semasa:
+
+- Website public berjalan di GitHub Pages: https://itumelaka.github.io/listpengusaha/
+- Data direktori dimuat melalui Google Apps Script dan hanya memaparkan rekod `Approved` dengan consent perkongsian data.
+- OTP e-mel menggunakan endpoint Google Apps Script; kod OTP tidak dijana atau dipaparkan oleh frontend.
+- Peta menggunakan Leaflet dan OpenStreetMap, dengan marker agregat mengikut negeri.
+- Paparan telefon telah dikemas supaya header, hero, kad info, carian, penapis, dan jadual tidak overflow ke kanan.
+- Export CSV/PDF kekal di frontend untuk kegunaan pentadbiran ringan.
+
+Nota mobile: jika telefon masih tunjuk paparan lama, reload halaman atau buka dengan cache-buster seperti `?v=latest` kerana PWA/browser boleh menyimpan cache lama seketika.
 ---
 
 ## Struktur Sistem
@@ -194,7 +209,7 @@ URL Web App boleh kekal sama jika update deployment sedia ada.
 
 | Fail | Kegunaan |
 |------|----------|
-| `index.html` | Portal utama, direktori, peta, borang, admin UI |
+| `index.html` | Portal utama, direktori, peta, borang, admin UI, dan responsive mobile |
 | `README.md` | Dokumentasi projek |
 | `backend/` | Rujukan backend/worker yang pernah disediakan |
 | `wrangler.toml` | Rujukan konfigurasi Cloudflare Worker, jika digunakan kemudian |
