@@ -105,7 +105,7 @@ function handleGetDirectory(e) {
     if (setuju && setuju !== 'SETUJU' && setuju !== 'YA' && setuju !== 'TRUE') continue;
     if (status && status !== 'APPROVED' && status !== 'LULUS') continue;
 
-    const jenis = normalizeJenis(String(row[COL.jenis] || ''));
+    const jenis = normalizeJenis(String(row[COL.jenis] || ''), nama);
     const wa    = String(row[COL.wa] || '').trim();
     const fb    = String(row[COL.fb] || '').trim();
 
@@ -493,20 +493,40 @@ function getColumnIndex(headers) {
 }
 
 /** Normalise jenis ternakan */
-function normalizeJenis(raw) {
-  if (!raw || raw === 'TIDAK DINYATAKAN' || raw === '') return 'Lain-lain';
-  const l = raw.toLowerCase();
-  if (l.includes('ayam') && l.includes('itik')) return 'Ternakan Ayam & Itik';
-  if (l.includes('ayam'))  return 'Ternakan Ayam';
-  if (l.includes('itik') || l.includes('angsa') || l.includes('burung')) return 'Ternakan Itik & Unggas';
-  if (l.includes('lembu') && l.includes('kambing')) return 'Ternakan Lembu & Kambing';
-  if (l.includes('lembu')) return 'Ternakan Lembu';
-  if (l.includes('kambing') || l.includes('ruminan') || l.includes('biri')) return 'Ternakan Kambing';
-  if (l.includes('ikan') || l.includes('udang') || l.includes('akuakultur') || l.includes('ternakan air')) return 'Akuakultur';
+function normalizeJenis(raw, nama) {
+  // Kalau tiada jenis, cuba teka dari nama syarikat/ladang
+  const src = (!raw || raw === 'TIDAK DINYATAKAN' || raw === '') 
+    ? (nama || '') : raw;
+
+  if (!src || src === '') return 'Lain-lain';
+  const l = src.toLowerCase();
+
+  // Unggas
+  if (l.includes('ayam') && (l.includes('itik') || l.includes('angsa'))) return 'Ternakan Ayam & Itik';
+  if (l.includes('ayam') || l.includes('poultry') || l.includes('boiler') || l.includes('broiler') || l.includes('pedaging')) return 'Ternakan Ayam';
+  if (l.includes('itik') || l.includes('angsa') || l.includes('unggas')) return 'Ternakan Itik & Unggas';
+
+  // Ruminan
+  if ((l.includes('lembu') || l.includes('sapi') || l.includes('tenusu')) && 
+      (l.includes('kambing') || l.includes('ruminan'))) return 'Ternakan Lembu & Kambing';
+  if (l.includes('lembu') || l.includes('sapi') || l.includes('tenusu') || l.includes('livestock')) return 'Ternakan Lembu';
+  if (l.includes('kambing') || l.includes('ruminan') || l.includes('biri') || l.includes('domba')) return 'Ternakan Kambing';
+
+  // Akuakultur
+  if (l.includes('ikan') || l.includes('udang') || l.includes('akuakultur') || 
+      l.includes('ternakan air') || l.includes('aqua')) return 'Akuakultur';
+
+  // Lain
   if (l.includes('lebah') || l.includes('madu')) return 'Lebah Madu';
   if (l.includes('rusa')) return 'Ternakan Rusa';
-  if (l.includes('pertanian') || l.includes('sayur') || l.includes('tanaman')) return 'Pertanian';
-  return raw.length > 40 ? raw.substring(0, 40) + '...' : raw;
+  if (l.includes('pertanian') || l.includes('sayur') || l.includes('tanaman') || 
+      l.includes('agro') || l.includes('farm') || l.includes('ladang')) return 'Pertanian & Agro';
+
+  // Kalau masih tak jumpa tapi ada nilai raw yang berbeza dari TIDAK DINYATAKAN
+  if (raw && raw !== 'TIDAK DINYATAKAN' && raw !== '') {
+    return raw.length > 35 ? raw.substring(0, 35) + '...' : raw;
+  }
+  return 'Lain-lain';
 }
 
 /** Sanitize nombor WhatsApp */
