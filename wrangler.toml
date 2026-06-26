@@ -1,0 +1,17 @@
+name = "listpengusaha-otp"
+main = "backend/cloudflare-worker-otp.js"
+compatibility_date = "2026-06-26"
+workers_dev = true
+
+# Set KV namespace ID after creating it in Cloudflare Workers KV.
+# [[kv_namespaces]]
+# binding = "OTP_KV"
+# id = "YOUR_KV_NAMESPACE_ID"
+
+[vars]
+ALLOWED_ORIGIN = "https://itumelaka.github.io"
+OTP_FROM_EMAIL = "noreply@example.com"
+
+# Secrets must be set in Cloudflare, not committed:
+# wrangler secret put OTP_PEPPER
+# wrangler secret put RESEND_API_KEY
