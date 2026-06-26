@@ -1,7 +1,8 @@
 // ============================================================
 // SERVICE WORKER — Portal Pengusaha Ternakan DVS Malaysia
 // ============================================================
-const CACHE_NAME = 'dvs-ternakan-v2';
+const CACHE_NAME = 'dvs-ternakan-v4';
+// Bump this value when cached static pages need to refresh on devices.
 const CACHE_URLS = [
   '/listpengusaha/',
   '/listpengusaha/index.html',
