@@ -178,7 +178,7 @@ Pastikan hanya tab/sheet public approved yang diperlukan oleh website diberi aks
 
 ### 3. Konfigurasi OTP Backend/API
 
-Tetapkan `AUTH_API_BASE` kepada URL backend/API production yang melaksanakan `/otp/request` dan `/otp/verify`.
+Tetapkan `AUTH_API_BASE` kepada URL backend/API production yang melaksanakan `/otp/request` dan `/otp/verify`. Template Cloudflare Worker disediakan di `backend/cloudflare-worker-otp.js`, dengan nota ringkas di `backend/README.md`.
 
 ### 4. GitHub Pages
 
