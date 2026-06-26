@@ -494,6 +494,12 @@
     .header-nav { flex-wrap: wrap; justify-content: flex-end; }
     .nav-btn { white-space: normal; text-align: center; justify-content: center; line-height: 1.2; }
     .hero h2, .hero p, .stat-card .label { overflow-wrap: anywhere; }
+    .portal-info-section { overflow: hidden; }
+    .portal-info-grid { min-width: 0; }
+    .portal-info-card { min-width: 0; }
+    .portal-info-card > div { min-width: 0; }
+    .portal-info-card div { overflow-wrap: normal; word-break: normal; }
+
 
     @media (max-width: 1100px) {
       .site-header { padding: 10px 16px; }
@@ -502,14 +508,25 @@
     }
 
     @media (max-width: 900px) {
-      section[style*="grid-template-columns:1fr 1fr 1fr"] { padding: 18px 16px !important; }
-      section[style*="grid-template-columns:1fr 1fr 1fr"] > div {
+      .portal-info-section { padding: 18px 16px !important; }
+      .portal-info-grid {
         width: 100% !important;
         max-width: 100% !important;
-      }
-      section[style*="grid-template-columns:1fr 1fr 1fr"] div[style*="grid-template-columns:1fr 1fr 1fr"] {
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+        grid-template-columns: 1fr !important;
         gap: 14px !important;
+      }
+      .portal-info-card {
+        align-items: flex-start !important;
+        gap: 12px !important;
+        padding: 18px !important;
+      }
+      .portal-info-card div[style*="font-weight:700"] {
+        font-size: 16px !important;
+        line-height: 1.35 !important;
+      }
+      .portal-info-card div[style*="font-size:13px"] {
+        font-size: 14px !important;
+        line-height: 1.55 !important;
       }
       .map-layout { grid-template-columns: 1fr; }
       .map-canvas { min-height: 460px; }
@@ -586,13 +603,10 @@
       .directory-wrap, .register-wrap, .admin-wrap, .map-wrap { padding: 16px; }
       .register-card { padding: 20px; }
       .map-canvas { min-height: 380px; }
-      section[style*="grid-template-columns:1fr 1fr 1fr"] div[style*="grid-template-columns:1fr 1fr 1fr"] {
-        grid-template-columns: 1fr !important;
-      }
-      section[style*="grid-template-columns:1fr 1fr 1fr"] div[style*="display:flex"] {
-        padding: 16px !important;
-        align-items: flex-start !important;
-      }
+      .portal-info-section { padding: 16px !important; }
+      .portal-info-grid { grid-template-columns: 1fr !important; }
+      .portal-info-card { padding: 16px !important; }
+      .portal-info-card > span { font-size: 26px !important; }
     }
 
     @media (max-width: 380px) {
@@ -688,10 +702,10 @@
   </section>
 
   <!-- Tentang Portal -->
-  <section style="background:#fff;border-bottom:1px solid var(--neutral-300);padding:24px;margin:0">
-    <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;align-items:stretch">
+  <section class="portal-info-section" style="background:#fff;border-bottom:1px solid var(--neutral-300);padding:24px;margin:0">
+    <div class="portal-info-grid" style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;align-items:stretch">
 
-      <div style="display:flex;gap:14px;align-items:flex-start;padding:16px;background:var(--green-50);border-radius:var(--radius-md);border:1px solid #c6e8d4">
+      <div class="portal-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:16px;background:var(--green-50);border-radius:var(--radius-md);border:1px solid #c6e8d4">
         <span style="font-size:28px;flex-shrink:0">🤝</span>
         <div>
           <div style="font-weight:700;font-size:14px;color:var(--green-800);margin-bottom:4px">Berhubung Sesama Penternak</div>
@@ -699,7 +713,7 @@
         </div>
       </div>
 
-      <div style="display:flex;gap:14px;align-items:flex-start;padding:16px;background:#eff6ff;border-radius:var(--radius-md);border:1px solid #bfdbfe">
+      <div class="portal-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:16px;background:#eff6ff;border-radius:var(--radius-md);border:1px solid #bfdbfe">
         <span style="font-size:28px;flex-shrink:0">🎓</span>
         <div>
           <div style="font-weight:700;font-size:14px;color:#1e40af;margin-bottom:4px">Platform Latihan Industri Pelajar</div>
@@ -707,7 +721,7 @@
         </div>
       </div>
 
-      <div style="display:flex;gap:14px;align-items:center;padding:16px;background:linear-gradient(135deg,var(--green-800),var(--green-600));border-radius:var(--radius-md);cursor:pointer" onclick="showView('register')">
+      <div class="portal-info-card portal-info-cta" style="display:flex;gap:14px;align-items:center;padding:16px;background:linear-gradient(135deg,var(--green-800),var(--green-600));border-radius:var(--radius-md);cursor:pointer" onclick="showView('register')">
         <span style="font-size:28px;flex-shrink:0">✏️</span>
         <div>
           <div style="font-weight:700;font-size:14px;color:#fff;margin-bottom:4px">Sertai Direktori Ini</div>
