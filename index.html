@@ -760,7 +760,7 @@
             <input type="email" id="reg-email" placeholder="nama@email.com" required />
           </div>
           <div class="form-group">
-            <label for="reg-fb">Facebook URL Ladang atau Peribadi</label>
+            <label for="reg-fb">Facebook URL Ladang atau Peribadi <span style="font-weight:400;color:var(--neutral-500);font-size:12px">(Pilihan)</span></label>
             <input type="text" id="reg-fb" placeholder="https://facebook.com/namaladang (pilihan)" />
           </div>
         </div>
@@ -1120,7 +1120,7 @@ async function submitRegForm(e) {
     lokasi: document.getElementById('reg-lokasi').value.trim(),
     jenis:  document.getElementById('reg-jenis').value,
     email:  document.getElementById('reg-email').value.trim(),
-    fb:     document.getElementById('reg-fb').value.trim(),
+    fb:     sanitizeFbInput(document.getElementById('reg-fb').value.trim()),
     setuju: document.getElementById('reg-setuju').checked ? 'SETUJU' : ''
   };
 
@@ -1310,6 +1310,13 @@ function formatDate(ts) {
   } catch (e) { return ts.toString().split(' ')[0]; }
 }
 
+
+function sanitizeFbInput(val) {
+  if (!val) return '';
+  const skip = /^(tiada|tak ada|takda|takde|takdak|none|no|-)$/i;
+  if (skip.test(val.trim())) return '';
+  return val;
+}
 function escHtml(str) {
   return String(str || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
