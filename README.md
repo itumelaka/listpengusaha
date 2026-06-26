@@ -1,221 +1,287 @@
-# Portal Direktori Pengusaha Ternakan Malaysia
+# 🐄 Portal Direktori Pengusaha Ternakan DVS Malaysia
 
-**Jabatan Perkhidmatan Veterinar (DVS) Malaysia**  
-Inisiatif Institut Teknologi Unggas 2026
+> **Inisiatif Institut Teknologi Unggas 2026**  
+> Jabatan Perkhidmatan Veterinar Malaysia | Kementerian Pertanian & Keterjaminan Makanan
 
----
-
-## Live Demo
-
-https://itumelaka.github.io/listpengusaha/
+[![GitHub Pages](https://img.shields.io/badge/Live-GitHub%20Pages-green?logo=github)](https://itumelaka.github.io/listpengusaha/)
+[![GAS Backend](https://img.shields.io/badge/Backend-Google%20Apps%20Script-blue?logo=google)](https://script.google.com)
+[![Data](https://img.shields.io/badge/Data-Google%20Sheets-brightgreen?logo=googlesheets)](https://docs.google.com/spreadsheets/d/1YKzqywmFj9cu0uYQhVGIndmnL4roYV3gYIe4OXoCxL0)
 
 ---
 
-## Tentang Portal Ini
+## 📋 Tentang Projek
 
-Portal ini menyediakan direktori pengusaha ternakan Malaysia yang boleh diakses oleh orang awam dan pengusaha lain untuk tujuan hebahan dan networking.
+Portal ini adalah direktori awam pengusaha ternakan Malaysia yang dibangunkan untuk tujuan **hebahan dan networking** dalam ekosistem industri ternakan negara. Data bersumber dari Google Sheets dan diurus melalui Google Apps Script (GAS) sebagai backend API.
 
 ### Ciri-ciri Utama
 
-- **Log Masuk Email + OTP sebenar** — OTP mesti dihantar dan disahkan melalui backend/API yang selamat.
-- **Direktori Awam** — Senarai pengusaha yang telah diluluskan dan bersetuju untuk dikongsikan.
-- **Borang Pendaftaran** — Pengusaha baru boleh menghantar maklumat untuk semakan.
-- **Carian & Penapis** — Mengikut negeri dan jenis perusahaan.
-- **Responsive** — Sesuai untuk desktop dan mudah alih.
-- **Paparan data lebih selamat** — Data dari Google Sheets di-escape sebelum dimasukkan ke HTML.
-
-> Nota keselamatan: GitHub Pages ialah static hosting. Ia tidak boleh menyimpan secret email provider, API key, atau logic OTP dengan selamat. OTP production wajib menggunakan backend/serverless API seperti Google Apps Script, Cloudflare Workers, Vercel Functions, Firebase Functions, atau backend sendiri.
-
----
-
-## Konfigurasi OTP Production
-
-Frontend di `index.html` menggunakan constant berikut:
-
-```javascript
-const AUTH_API_BASE = '';
-const REQUEST_OTP_ENDPOINT = AUTH_API_BASE ? `${AUTH_API_BASE}/otp/request` : '';
-const VERIFY_OTP_ENDPOINT = AUTH_API_BASE ? `${AUTH_API_BASE}/otp/verify` : '';
-```
-
-Tetapkan `AUTH_API_BASE` kepada URL backend/API production, contohnya:
-
-```javascript
-const AUTH_API_BASE = 'https://api.example.gov.my/listpengusaha';
-```
-
-### API Contract
-
-#### POST `/otp/request`
-
-Request:
-
-```json
-{
-  "email": "user@example.com"
-}
-```
-
-Response berjaya:
-
-```json
-{
-  "ok": true
-}
-```
-
-Backend perlu:
-
-- Jana OTP secara server-side sahaja.
-- Hash OTP sebelum simpan.
-- Tetapkan expiry pendek, contohnya 5-10 minit.
-- Rate-limit mengikut email dan IP.
-- Hantar OTP melalui email provider server-side.
-- Jangan pulangkan OTP dalam response API.
-
-#### POST `/otp/verify`
-
-Request:
-
-```json
-{
-  "email": "user@example.com",
-  "otp": "123456"
-}
-```
-
-Response berjaya:
-
-```json
-{
-  "ok": true
-}
-```
-
-Backend perlu:
-
-- Sahkan hash OTP dan expiry.
-- Padam atau invalidate OTP selepas berjaya digunakan.
-- Rate-limit cubaan OTP yang gagal.
-- Set session/cookie atau pulangkan token yang sesuai jika perlu kawalan akses lanjutan.
+| Ciri | Status |
+|------|--------|
+| 📋 Direktori awam dengan carian & penapis | ✅ Aktif |
+| ✏️ Borang pendaftaran pengusaha baru | ✅ Aktif |
+| 🔑 Log masuk OTP melalui e-mel | ✅ Aktif |
+| ⚙️ Panel admin dengan kelulusan/penolakan rekod | ✅ Aktif |
+| 📊 Statistik langsung (jumlah, negeri, jenis) | ✅ Aktif |
+| 📧 Notifikasi e-mel automatik | ✅ Aktif |
+| 🔒 Perlindungan data (PDPA 2010) | ✅ Aktif |
+| 📱 Responsif (mobile-friendly) | ✅ Aktif |
 
 ---
 
-## Struktur Google Sheets Yang Disarankan
+## 🏗️ Seni Bina Sistem
 
-Untuk mengelakkan data mentah/private terdedah kepada public static site, asingkan tab dalaman dan tab awam.
-
-### Tabs
-
-| Tab | Tujuan | Akses |
-| --- | --- | --- |
-| `Submissions_Raw` | Data mentah daripada borang pendaftaran. | Private/internal sahaja. |
-| `Approved_Public` | Data yang sudah disemak dan diluluskan untuk paparan awam. | Boleh dibaca oleh website public. |
-| `Lookup_Negeri_Jenis` | Senarai negeri dan jenis perusahaan untuk rujukan/lookup. | Internal atau read-only mengikut keperluan. |
-| `Audit_Log` | Rekod semakan, kelulusan, penolakan, dan perubahan status. | Private/internal sahaja. |
-
-Public website hanya patut membaca data daripada tab `Approved_Public`. Jangan jadikan `Submissions_Raw` sebagai "Anyone with the link can view" kerana tab itu boleh mengandungi data mentah/private. Untuk GitHub Pages static site, hanya public approved sheet/tab yang patut exposed.
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    GITHUB PAGES                              │
+│               index.html (Frontend SPA)                     │
+│   • Direktori    • Pendaftaran    • Admin Panel              │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ HTTP POST/GET (JSON)
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│              GOOGLE APPS SCRIPT (Backend API)                │
+│   GAS ID: 1QrOl4O085g_6tavM10CLCnWJ7a-smgi...              │
+│                                                             │
+│   GET  /exec?action=getDirectory    → data awam             │
+│   GET  /exec?action=getStats        → statistik             │
+│   POST action=requestOtp            → hantar OTP e-mel      │
+│   POST action=verifyOtp             → sahkan & beri token   │
+│   POST action=submitForm            → daftar pengusaha baru │
+│   POST action=approveRecord         → admin: lulus          │
+│   POST action=rejectRecord          → admin: tolak          │
+│   POST action=getAdminData          → admin: semua data     │
+│   POST action=bulkApprove           → admin: lulus pukal    │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ SpreadsheetApp API
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   GOOGLE SHEETS                              │
+│   ID: 1YKzqywmFj9cu0uYQhVGIndmnL4roYV3gYIe4OXoCxL0        │
+│                                                             │
+│   ├── Form Responses 1  → data utama (semua pendaftaran)    │
+│   ├── DataBersih        → data yang telah diluluskan        │
+│   └── AuditLog          → log semua tindakan admin          │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## Struktur Kolum Google Sheets
+## 📁 Struktur Fail
 
-Gunakan struktur kolum berikut untuk `Submissions_Raw` dan salurkan rekod yang lulus ke `Approved_Public`.
+```
+listpengusaha/
+├── index.html          # Frontend SPA (HTML + CSS + JS)
+├── Code.gs             # GAS Backend (salin ke editor GAS)
+├── appsscript.json     # Manifest GAS
+└── README.md           # Dokumentasi ini
+```
 
-| Kolum | Nama Kolum |
-| --- | --- |
+---
+
+## 🚀 Panduan Pemasangan
+
+### 1. Google Sheets — Sediakan Sheet
+
+Buka spreadsheet dan pastikan sheet-sheet berikut wujud:
+
+| Sheet | Fungsi |
+|-------|--------|
+| `Form Responses 1` | Data utama dari pendaftaran |
+| `DataBersih` | Data yang telah diluluskan (auto-dicipta) |
+| `AuditLog` | Log tindakan admin (auto-dicipta) |
+
+**Lajur dalam `Form Responses 1`** (mengikut urutan):
+
+| Kolum | Nama Header |
+|-------|------------|
 | A | Timestamp |
-| B | Nama Individu / Syarikat / Ladang |
-| C | No. Telefon / WhatsApp |
-| D | Negeri |
-| E | Lokasi Ladang |
-| F | Facebook URL |
-| G | Email Address |
-| H | Jenis Perusahaan |
-| I | Persetujuan Perkongsian Data |
+| B | NAMA INDIVIDU, SYARIKAT ATAU LADANG |
+| C | NO TELEFON (WHATSAPP) |
+| D | NEGERI |
+| E | LOKASI LADANG |
+| F | Facebook URL Ladang atau Peribadi |
+| G | Email address |
+| H | JENIS PERUSAHAAN |
+| I | SAYA SETUJU... (persetujuan) |
 | J | Status |
 | K | ApprovedBy |
 | L | ApprovedAt |
 | M | UpdatedAt |
 | N | ReviewNote |
 
-### Nilai Status
+---
 
-- `Pending`
-- `Approved`
-- `Rejected`
-- `Needs Review`
+### 2. Google Apps Script — Deploy Backend
 
-### Peraturan Paparan Awam
+1. Buka [script.google.com](https://script.google.com) dan buka projek GAS:  
+   ID: `1QrOl4O085g_6tavM10CLCnWJ7a-smgieDN2i7zKTpJ4-2TYVzeAD754p`
 
-Direktori awam hanya boleh memaparkan rekod yang memenuhi kedua-dua syarat ini:
+2. **Padam** semua kod lama dan **tampalkan** kandungan `Code.gs` dari repo ini.
 
-- `Status = Approved`
-- `Persetujuan Perkongsian Data = Ya/Setuju`
+3. Kemaskini `appsscript.json` dengan kandungan dari repo ini (klik ikon ⚙️ > Project Settings > Enable "Show appsscript.json file in editor").
 
-Rekod dengan status `Pending`, `Rejected`, atau `Needs Review` tidak boleh dipaparkan di direktori awam.
+4. Jalankan **`setupSheets()`** sekali untuk mencipta sheet `DataBersih` dan `AuditLog`.
+
+5. Jalankan **`migrateApproveOldRecords()`** sekali untuk meluluskan semua data lama.
+
+6. **Deploy sebagai Web App:**
+   - Klik **Deploy > New Deployment**
+   - Type: **Web app**
+   - Execute as: **Me (itumelaka@gmail.com)**
+   - Who has access: **Anyone**
+   - Klik **Deploy**
+   - **Salin URL Web App** yang dijana
+
+7. **Kemaskini `GAS_URL`** dalam `index.html`:
+   ```javascript
+   // Gantikan baris ini:
+   const GAS_URL = 'https://script.google.com/macros/s/AKfycbxPLACEHOLDER_REPLACE_WITH_DEPLOYED_URL/exec';
+   
+   // Dengan URL sebenar anda:
+   const GAS_URL = 'https://script.google.com/macros/s/AKfycbx...YOUR_REAL_URL.../exec';
+   ```
 
 ---
 
-## Setup & Deployment
-
-### 1. Dapatkan salinan repo jika diperlukan
+### 3. GitHub Pages — Deploy Frontend
 
 ```bash
+# Clone repo (atau buat baru)
 git clone https://github.com/itumelaka/listpengusaha.git
+cd listpengusaha
+
+# Kemaskini GAS_URL dalam index.html
+
+# Commit dan push
+git add .
+git commit -m "kemaskini: sistem v2 - panel admin, OTP, filter"
+git push origin main
 ```
 
-### 2. Konfigurasi Google Sheets Public Approved
+Laman akan tersedia di: `https://itumelaka.github.io/listpengusaha/`
 
-Buka `index.html` dan tukar nilai berikut kepada ID dan GID tab `Approved_Public` sahaja:
+---
+
+## 🔑 Aliran Log Masuk (OTP)
+
+```
+Pengguna masukkan e-mel
+        │
+        ▼
+GAS: jana OTP 6 digit
+GAS: simpan dalam ScriptProperties (tamat 10 minit)
+GAS: hantar e-mel OTP
+        │
+        ▼
+Pengguna masukkan kod OTP
+        │
+        ▼
+GAS: sahkan kod + tamat tempoh
+GAS: beri token sesi
+        │
+        ├── e-mel admin → akses Panel Admin
+        └── e-mel lain  → akses biasa
+```
+
+---
+
+## ⚙️ Konfigurasi GAS (`Code.gs`)
 
 ```javascript
-const PUBLIC_SHEET_ID = 'YOUR_PUBLIC_APPROVED_GOOGLE_SHEET_ID';
-const PUBLIC_GID = 'YOUR_APPROVED_PUBLIC_GID';
+const CONFIG = {
+  SPREADSHEET_ID: '1YKzqywmFj9cu0uYQhVGIndmnL4roYV3gYIe4OXoCxL0',
+  SHEET_RESPONSES: 'Form Responses 1',
+  SHEET_CLEANED:   'DataBersih',
+  SHEET_AUDIT:     'AuditLog',
+  ADMIN_EMAIL:     'itumelaka@gmail.com',   // ← tukar jika perlu
+  OTP_EXPIRY_MIN:  10,
+};
 ```
 
-Pastikan hanya tab/sheet public approved yang diperlukan oleh website diberi akses baca awam. Data mentah dalam `Submissions_Raw` perlu kekal private/internal.
+---
 
-### 3. Konfigurasi OTP Backend/API
+## 📊 Contoh Respons API
 
-Tetapkan `AUTH_API_BASE` kepada URL backend/API production yang melaksanakan `/otp/request` dan `/otp/verify`. Template Cloudflare Worker disediakan di `backend/cloudflare-worker-otp.js`, dengan nota ringkas di `backend/README.md`.
+### GET ?action=getDirectory
 
-### 4. GitHub Pages
+```json
+{
+  "status": "ok",
+  "count": 112,
+  "data": [
+    {
+      "id": 1,
+      "nama": "VARSITY AGRO FARM",
+      "jenis": "Ternakan Ayam",
+      "negeri": "Selangor",
+      "lokasi": "Shah Alam Selangor",
+      "wa": "+60178806816",
+      "fb": "https://facebook.com/varsityagrofarming",
+      "timestamp": "22/02/2024 18:55:15"
+    }
+  ],
+  "updated": "2026-06-26T10:00:00.000Z"
+}
+```
 
-- Pergi ke Settings > Pages.
-- Source: main branch, folder / (root).
-- Save dan tunggu beberapa minit.
+### POST action=requestOtp
+
+```json
+// Request
+{ "action": "requestOtp", "email": "user@example.com" }
+
+// Response
+{ "status": "ok", "message": "Kod OTP telah dihantar ke user@example.com. Sah selama 10 minit." }
+```
 
 ---
 
-## Teknologi
+## 🛡️ Keselamatan
 
-- HTML5 / CSS3 / Vanilla JavaScript
-- Google Sheets API (gviz/tq)
-- Google Fonts (Plus Jakarta Sans)
-- GitHub Pages (hosting)
-- Backend/API berasingan untuk OTP production
+- OTP disimpan dalam **ScriptProperties** (bukan spreadsheet atau cache awam)
+- Token sesi menggunakan **base64 + MD5 hash** (cukup untuk demo/MVP)
+- Pengesahan admin **berdasarkan e-mel** dalam `CONFIG.ADMIN_EMAIL`
+- Semua input di-**sanitize** sebelum dipaparkan (XSS protection)
+- Nombor telefon hanya dipaparkan dalam format link WhatsApp
+- E-mel pengguna **tidak didedahkan** kepada awam dalam direktori
 
----
-
-## Security Checklist
-
-- Jangan letak email provider secret/API key dalam `index.html`.
-- Jangan pulangkan OTP dari backend kepada frontend.
-- Gunakan HTTPS sahaja untuk `AUTH_API_BASE`.
-- Aktifkan CORS hanya untuk domain GitHub Pages yang digunakan.
-- Rate-limit endpoint OTP.
-- Simpan OTP sebagai hash dan tetapkan expiry pendek.
-- Paparkan hanya data `Approved_Public` yang sudah disemak.
+> ⚠️ **Nota Keselamatan Produksi:** Untuk penggunaan produksi penuh, pertimbangkan untuk menggantikan token sesi dengan JWT yang ditandatangani dengan betul dan menggunakan Google Cloud Secret Manager untuk konfigurasi sensitif.
 
 ---
 
-## Hubungi
+## 📧 Aliran E-mel Automatik
 
-Jabatan Perkhidmatan Veterinar Malaysia  
-Kementerian Pertanian & Keterjaminan Makanan  
-Website: www.dvs.gov.my
+| Peristiwa | Penerima | Kandungan |
+|-----------|----------|-----------|
+| OTP diminta | Pemohon | Kod OTP 6 digit |
+| Pendaftaran baru | Pemohon | Pengesahan penerimaan |
+| Pendaftaran baru | Admin | Notifikasi dengan butiran |
 
 ---
 
-Copyright © 2026 — Inisiatif Institut Teknologi Unggas 2026
+## 🔄 Kemaskini & Penyelenggaraan
+
+### Tambah Admin Baru
+Tukar `ADMIN_EMAIL` dalam `Code.gs` atau tambah logik multi-admin dalam `verifyAdminSession()`.
+
+### Migration Data Lama
+Jalankan `migrateApproveOldRecords()` dari editor GAS untuk meluluskan semua rekod lama yang tiada status.
+
+### Re-deploy selepas kemaskini kod
+Setiap kali kod GAS dikemaskini, perlu buat **New Deployment** baru dan kemaskini `GAS_URL` dalam `index.html`.
+
+---
+
+## 📞 Hubungi
+
+- **E-mel:** itumelaka@gmail.com  
+- **Portal:** https://itumelaka.github.io/listpengusaha/  
+- **Data:** https://docs.google.com/spreadsheets/d/1YKzqywmFj9cu0uYQhVGIndmnL4roYV3gYIe4OXoCxL0
+
+---
+
+## 📜 Lesen
+
+© 2026 Portal Direktori Pengusaha Ternakan DVS Malaysia  
+Inisiatif Institut Teknologi Unggas 2026  
+Jabatan Perkhidmatan Veterinar Malaysia | Kementerian Pertanian & Keterjaminan Makanan Malaysia
