@@ -1507,25 +1507,18 @@ function exportPdf() {
     <tbody>${rows}</tbody>
   </table>
   <div class="footer">© 2026 Portal Direktori Pengusaha Ternakan DVS Malaysia — Sulit & Untuk Kegunaan Dalaman</div>
-  <script>window.onload = function(){ window.print(); }<\/script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/listpengusaha/sw.js')
-          .then(() => console.log('SW registered'))
-          .catch(e => console.log('SW error:', e));
-      });
-    }
-  </script>
-</body>
+  </body>
 </html>`;
 
   const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
   const url  = URL.createObjectURL(blob);
   const win  = window.open(url, '_blank');
-  if (!win) showToast('Sila benarkan popup untuk cetak PDF.', 'error');
-  else showToast('📄 Halaman cetak dibuka. Gunakan Ctrl+P untuk simpan sebagai PDF.', 'success');
+  if (!win) {
+    showToast('Sila benarkan popup untuk cetak PDF.', 'error');
+  } else {
+    win.addEventListener('load', () => win.print(), { once: true });
+    showToast('📄 Halaman cetak dibuka. Gunakan Ctrl+P untuk simpan sebagai PDF.', 'success');
+  }
 }
 
 function showToast(msg, type) {
@@ -1534,16 +1527,14 @@ function showToast(msg, type) {
   el.className   = 'show ' + (type || '');
   setTimeout(() => el.className = '', 3500);
 }
-</script>
 
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/listpengusaha/sw.js')
-          .then(() => console.log('SW registered'))
-          .catch(e => console.log('SW error:', e));
-      });
-    }
-  </script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/listpengusaha/sw.js')
+      .then(() => console.log('SW registered'))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+</script>
 </body>
 </html>
