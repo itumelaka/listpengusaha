@@ -61,15 +61,30 @@
     }
     .cover-logos img { height: 60px; }
     .cover-logos .div { width: 1px; height: 48px; background: rgba(255,255,255,.3); }
+    .cover > * {
+      position: relative;
+      z-index: 1;
+    }
     .cover h1 {
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: 30px;
       font-weight: 800;
       margin-bottom: 8px;
-      text-shadow: 0 2px 4px rgba(0,0,0,.2);
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,.28);
     }
-    .cover .subtitle { font-size: 15px; opacity: .85; margin-bottom: 6px; }
-    .cover .org { font-size: 13px; opacity: .7; margin-bottom: 28px; }
+    .cover .subtitle {
+      font-size: 15px;
+      color: rgba(255,255,255,.92);
+      margin-bottom: 6px;
+      text-shadow: 0 1px 4px rgba(0,0,0,.24);
+    }
+    .cover .org {
+      font-size: 13px;
+      color: rgba(255,255,255,.78);
+      margin-bottom: 28px;
+      text-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
     .cover-badges {
       display: flex;
       justify-content: center;
@@ -87,7 +102,8 @@
     .cover-meta {
       margin-top: 28px;
       font-size: 12px;
-      opacity: .6;
+      color: rgba(255,255,255,.72);
+      text-shadow: 0 1px 4px rgba(0,0,0,.2);
     }
 
     /* ── LAYOUT ── */
@@ -276,6 +292,22 @@
     .role-card h4 { font-size: 14px; margin: 0 0 6px; text-transform: none; letter-spacing: 0; }
     .role-card p  { font-size: 12px; margin: 0; }
 
+    .manual-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px !important;
+    }
+    .manual-actions button,
+    .manual-actions a {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.25;
+    }
+
     /* ── PRINT ── */
     @media print {
       body { background: #fff; font-size: 12px; }
@@ -285,7 +317,23 @@
     }
 
     @media (max-width: 640px) {
-      .cover h1 { font-size: 22px; }
+      .cover { padding: 52px 22px 44px; }
+      .cover h1 { font-size: 26px; line-height: 1.15; }
+      .cover .subtitle { font-size: 14px; line-height: 1.5; }
+      .cover .org { font-size: 12px; line-height: 1.5; }
+      .cover-meta { font-size: 11px; line-height: 1.5; }
+      .cover-logos img { height: 48px; }
+      .cover-badges { gap: 8px; }
+      .cover-badge { width: 100%; max-width: 280px; padding: 8px 14px; }
+      .manual-actions { justify-content: center; }
+      .manual-actions button,
+      .manual-actions a {
+        width: 100%;
+        max-width: 320px;
+        margin-left: 0 !important;
+        text-align: center;
+        white-space: normal;
+      }
       .role-grid { grid-template-columns: 1fr; }
       .section { padding: 20px 16px; }
     }
@@ -314,7 +362,7 @@
 <div class="container">
 
   <!-- ══ PRINT BUTTON ══ -->
-  <div class="no-print" style="text-align:right;margin-bottom:20px">
+  <div class="no-print manual-actions" style="text-align:right;margin-bottom:20px">
     <button onclick="window.print()" style="background:var(--green-700);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🖨️ Cetak / Simpan PDF</button>
     <a href="index.html" style="margin-left:10px;background:#fff;color:var(--neutral-700);border:1px solid var(--neutral-300);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none">← Kembali ke Portal</a>
   </div>
