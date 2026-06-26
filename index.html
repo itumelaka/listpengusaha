@@ -344,6 +344,23 @@
     .link-fb { background: #eff6ff; color: #1d4ed8; }
     .link-fb:hover { background: #dbeafe; }
 
+    /* ─── PETA TABURAN ───────────────────────────────────── */
+    .map-wrap { max-width: 1280px; margin: 0 auto; padding: 24px; }
+    .map-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: stretch; }
+    .map-canvas { position: relative; min-height: 560px; overflow: hidden; border-radius: var(--radius-lg); background: linear-gradient(135deg, #dff3ff 0%, #edf8f0 50%, #fff7df 100%); border: 1px solid var(--neutral-200); box-shadow: var(--shadow-md); }
+    .map-canvas::before { content: ''; position: absolute; inset: 24px; border: 1px dashed rgba(26,112,64,.18); border-radius: 28px; }
+    .map-watermark { position: absolute; left: 24px; bottom: 20px; color: rgba(15,23,42,.35); font-size: 12px; font-weight: 600; }
+    .map-marker { position: absolute; transform: translate(-50%, -50%); display: grid; place-items: center; min-width: 34px; height: 34px; padding: 0 8px; border-radius: 999px; background: var(--green-600); color: #fff; border: 3px solid #fff; box-shadow: 0 10px 24px rgba(22,101,52,.25); font-size: 12px; font-weight: 800; cursor: pointer; transition: transform .16s ease, box-shadow .16s ease; }
+    .map-marker:hover { transform: translate(-50%, -50%) scale(1.12); box-shadow: 0 14px 30px rgba(22,101,52,.35); z-index: 3; }
+    .map-marker span { position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); white-space: nowrap; color: var(--neutral-900); background: rgba(255,255,255,.9); border: 1px solid var(--neutral-200); border-radius: 999px; padding: 3px 8px; font-size: 11px; font-weight: 700; }
+    .map-side { background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 18px; border: 1px solid var(--neutral-100); }
+    .map-side h3 { font-size: 18px; margin-bottom: 6px; color: var(--neutral-900); }
+    .map-side p { font-size: 13px; color: var(--neutral-500); margin-bottom: 14px; }
+    .map-list { display: grid; gap: 8px; max-height: 430px; overflow: auto; }
+    .map-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--neutral-50); font-size: 13px; color: var(--neutral-700); }
+    .map-list-item strong { color: var(--neutral-900); }
+    .map-list-item button { border: 0; background: transparent; color: var(--green-700); font-weight: 700; cursor: pointer; font-family: inherit; }
+
     /* ─── EMPTY / LOADING ───────────────────────────────────── */
     .empty-state {
       text-align: center;
@@ -468,6 +485,8 @@
     /* ─── RESPONSIVE ─────────────────────────────────────────── */
     @media (max-width: 900px) {
       section[style*="grid-template-columns:1fr 1fr 1fr"] div[style*="grid"] { grid-template-columns: 1fr !important; }
+      .map-layout { grid-template-columns: 1fr; }
+      .map-canvas { min-height: 460px; }
     }
     @media (max-width: 768px) {
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -481,7 +500,7 @@
     @media (max-width: 480px) {
       .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
       .hero { padding: 20px 16px; }
-      .directory-wrap, .register-wrap, .admin-wrap { padding: 16px; }
+      .directory-wrap, .register-wrap, .admin-wrap, .map-wrap { padding: 16px; }
       .register-card { padding: 20px; }
     }
   </style>
@@ -502,6 +521,7 @@
     </div>
     <nav class="header-nav">
       <button class="nav-btn" id="nav-directory" onclick="showView('directory')">🐄 Direktori</button>
+      <button class="nav-btn" id="nav-map" onclick="showView('map')">🗺️ Peta</button>
       <button class="nav-btn" id="nav-register"  onclick="showView('register')">✏️ Daftar</button>
       <a href="students.html" class="nav-btn" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)">🎓 Pelajar &amp; Graduan</a>
       <a href="manual.html" class="nav-btn" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)">📖 Manual</a>
@@ -668,6 +688,31 @@
     <p style="font-size:12px;color:var(--neutral-500);margin-top:12px;text-align:center">
       * Hanya rekod yang telah diluluskan dan bersetuju dikongsikan ditunjukkan
     </p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     VIEW: PETA
+════════════════════════════════════════════════════════ -->
+<div id="view-map" class="view">
+  <section class="hero" style="padding-bottom:16px">
+    <div class="hero-inner">
+      <div class="hero-badge">🗺️ Peta Taburan Pengusaha</div>
+      <h2>Lihat taburan pengusaha mengikut negeri</h2>
+      <p>Peta ini memplot rekod approved berdasarkan negeri. Untuk ketepatan ladang sebenar, tambah kolum latitude/longitude dalam sheet pada fasa seterusnya.</p>
+    </div>
+  </section>
+  <div class="map-wrap">
+    <div class="map-layout">
+      <div class="map-canvas" id="map-canvas" aria-label="Peta taburan pengusaha mengikut negeri">
+        <div class="map-watermark">Malaysia • Plot ikut centroid negeri</div>
+      </div>
+      <aside class="map-side">
+        <h3>Ringkasan Negeri</h3>
+        <p id="map-summary">Memuatkan peta...</p>
+        <div class="map-list" id="map-list"></div>
+      </aside>
+    </div>
   </div>
 </div>
 
@@ -875,6 +920,7 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbx1gi7in8JLjUASuUTonA5c
    KEADAAN GLOBAL
 ════════════════════════════════════════════════════════════ */
 let allData     = [];
+let filteredData = [];
 let adminData   = [];
 let currentTab  = 'pending';
 let session     = null;   // { email, isAdmin, token }
@@ -915,6 +961,10 @@ function showView(view) {
     loadAdminData();
   }
   if (view === 'directory' && allData.length === 0) loadDirectory();
+  if (view === 'map') {
+    if (allData.length === 0) loadDirectory();
+    else renderMap(filteredData.length ? filteredData : allData);
+  }
 }
 
 function updateHeaderAuth() {
@@ -954,7 +1004,9 @@ async function loadDirectory() {
   try {
     const data = await gasGet({ action: 'getDirectory' });
     allData = data.data || [];
+    filteredData = allData.slice();
     renderDirectory(allData);
+    renderMap(filteredData);
     updateStats(allData);
   } catch (err) {
     document.getElementById('dir-tbody').innerHTML = `
@@ -985,7 +1037,7 @@ function renderDirectory(records) {
 
   tbody.innerHTML = records.map((r, idx) => {
     const waUrl  = buildWaUrl(r.wa);
-    const fbUrl  = r.fb ? escHtml(r.fb) : '';
+    const fbUrl  = buildFacebookUrl(r.fb);
     const badge  = getJenisBadge(r.jenis);
     const date   = formatDate(r.timestamp);
 
@@ -1000,8 +1052,8 @@ function renderDirectory(records) {
       <td style="font-size:13px;color:var(--neutral-600)">${escHtml(r.lokasi)}</td>
       <td>
         <div class="action-links">
-          ${waUrl ? `<a href="${waUrl}" target="_blank" rel="noopener" class="link-wa">💬 WhatsApp</a>` : ''}
-          ${fbUrl ? `<a href="${fbUrl}" target="_blank" rel="noopener" class="link-fb">📘 Facebook</a>` : ''}
+          ${waUrl ? `<a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="link-wa">💬 WhatsApp</a>` : ''}
+          ${fbUrl ? `<a href="${fbUrl}" target="_blank" rel="noopener noreferrer" class="link-fb">📘 Facebook</a>` : ''}
         </div>
       </td>
       <td style="font-size:12px;color:var(--neutral-500)">${date}</td>
@@ -1038,9 +1090,97 @@ function filterData() {
     return matchQ && matchN && matchJ;
   });
 
+  filteredData = filtered;
   renderDirectory(filtered);
+  renderMap(filtered);
 }
 
+const NEGERI_COORDS = {
+  'JOHOR': { lat: 1.86, lng: 103.09 },
+  'KEDAH': { lat: 6.12, lng: 100.37 },
+  'KELANTAN': { lat: 5.31, lng: 102.01 },
+  'MELAKA': { lat: 2.20, lng: 102.25 },
+  'NEGERI SEMBILAN': { lat: 2.73, lng: 102.25 },
+  'PAHANG': { lat: 3.81, lng: 102.42 },
+  'PERAK': { lat: 4.59, lng: 101.09 },
+  'PERLIS': { lat: 6.44, lng: 100.20 },
+  'PULAU PINANG': { lat: 5.41, lng: 100.33 },
+  'SABAH': { lat: 5.98, lng: 116.08 },
+  'SARAWAK': { lat: 1.55, lng: 110.36 },
+  'SELANGOR': { lat: 3.07, lng: 101.52 },
+  'TERENGGANU': { lat: 5.33, lng: 103.14 },
+  'W.P. KUALA LUMPUR': { lat: 3.14, lng: 101.69 },
+  'WP KUALA LUMPUR': { lat: 3.14, lng: 101.69 },
+  'W.P. LABUAN': { lat: 5.28, lng: 115.23 },
+  'WP LABUAN': { lat: 5.28, lng: 115.23 },
+  'W.P. PUTRAJAYA': { lat: 2.93, lng: 101.69 },
+  'WP PUTRAJAYA': { lat: 2.93, lng: 101.69 }
+};
+
+function normalizeNegeri(value) {
+  return String(value || '').trim().toUpperCase().replace(/\s+/g, ' ');
+}
+
+function projectMalaysiaPoint(lat, lng) {
+  const minLng = 99.5, maxLng = 119.5, minLat = 0.6, maxLat = 7.5;
+  return {
+    x: Math.max(4, Math.min(96, ((lng - minLng) / (maxLng - minLng)) * 100)),
+    y: Math.max(6, Math.min(94, (1 - ((lat - minLat) / (maxLat - minLat))) * 100))
+  };
+}
+
+function renderMap(records) {
+  const canvas = document.getElementById('map-canvas');
+  const list = document.getElementById('map-list');
+  const summary = document.getElementById('map-summary');
+  if (!canvas || !list || !summary) return;
+  canvas.querySelectorAll('.map-marker').forEach(el => el.remove());
+  list.textContent = '';
+  const counts = new Map();
+  (records || []).forEach(r => {
+    const negeri = normalizeNegeri(r.negeri);
+    if (!negeri || !NEGERI_COORDS[negeri]) return;
+    counts.set(negeri, (counts.get(negeri) || 0) + 1);
+  });
+  const entries = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  summary.textContent = entries.length ? records.length + ' rekod dipaparkan di ' + entries.length + ' negeri.' : 'Tiada rekod negeri yang boleh diplot.';
+  entries.forEach(([negeri, count]) => {
+    const coord = NEGERI_COORDS[negeri];
+    const pos = projectMalaysiaPoint(coord.lat, coord.lng);
+    const marker = document.createElement('button');
+    marker.type = 'button';
+    marker.className = 'map-marker';
+    marker.style.left = pos.x + '%';
+    marker.style.top = pos.y + '%';
+    marker.title = negeri + ': ' + count + ' rekod';
+    marker.textContent = count;
+    const label = document.createElement('span');
+    label.textContent = negeri;
+    marker.appendChild(label);
+    marker.addEventListener('click', () => focusNegeri(negeri));
+    canvas.appendChild(marker);
+    const item = document.createElement('div');
+    item.className = 'map-list-item';
+    const name = document.createElement('strong');
+    name.textContent = negeri;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = count + ' rekod';
+    btn.addEventListener('click', () => focusNegeri(negeri));
+    item.append(name, btn);
+    list.appendChild(item);
+  });
+}
+
+function focusNegeri(negeri) {
+  const select = document.getElementById('filter-negeri');
+  const option = [...select.options].find(opt => normalizeNegeri(opt.value || opt.textContent) === negeri);
+  if (option) {
+    select.value = option.value || option.textContent;
+    filterData();
+    showView('directory');
+  }
+}
 /* ════════════════════════════════════════════════════════════
    LOGIN / OTP
 ════════════════════════════════════════════════════════════ */
@@ -1138,7 +1278,7 @@ function modalReset() {
   document.getElementById('modal-step1').style.display = 'block';
   document.getElementById('modal-step2').style.display = 'none';
   document.getElementById('modal-otp').value = '';
-  document.getElementById('modal-msg').innerHTML = '';
+  setAlert(document.getElementById('modal-msg'), '', '');
   const btn = document.getElementById('modal-otp-btn');
   if (btn) { btn.disabled = false; btn.textContent = '📨 Hantar OTP'; }
 }
@@ -1179,16 +1319,11 @@ async function modalVerifyOtp() {
 }
 
 function setModalMsg(type, msg) {
-  const el = document.getElementById('modal-msg');
-  if (!msg) { el.innerHTML = ''; return; }
-  el.innerHTML = '<div class="alert ' + (type==='error'?'alert-error':'alert-info') + '" style="margin-top:12px;font-size:13px">' + msg + '</div>';
+  setAlert(document.getElementById('modal-msg'), type, msg);
 }
 
 function setLoginMsg(type, msg) {
-  const el = document.getElementById('login-msg');
-  if (!msg) { el.innerHTML = ''; return; }
-  const cls = type === 'error' ? 'alert-error' : type === 'info' ? 'alert-info' : 'alert-success';
-  el.innerHTML = `<div class="alert ${cls}" style="margin-top:12px">${msg}</div>`;
+  setAlert(document.getElementById('login-msg'), type, msg);
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1199,7 +1334,7 @@ async function submitRegForm(e) {
   const btn = document.getElementById('reg-submit-btn');
   btn.disabled = true;
   btn.textContent = '⏳ Menghantar...';
-  document.getElementById('reg-alert').innerHTML = '';
+  setAlert(document.getElementById('reg-alert'), '', '');
 
   const payload = {
     action: 'submitForm',
@@ -1216,7 +1351,7 @@ async function submitRegForm(e) {
   try {
     const res = await gasPost(payload);
     if (res.error) {
-      document.getElementById('reg-alert').innerHTML = `<div class="alert alert-error">⚠️ ${res.error}</div>`;
+      setAlert(document.getElementById('reg-alert'), 'error', '⚠️ ' + res.error);
       btn.disabled = false;
       btn.textContent = '📤 Hantar Maklumat Perusahaan';
       return;
@@ -1225,7 +1360,7 @@ async function submitRegForm(e) {
     document.getElementById('reg-success').style.display = 'block';
     showToast('Pendaftaran berjaya dihantar!', 'success');
   } catch (err) {
-    document.getElementById('reg-alert').innerHTML = `<div class="alert alert-error">⚠️ Gagal menghubungi server. Cuba lagi.</div>`;
+    setAlert(document.getElementById('reg-alert'), 'error', '⚠️ Gagal menghubungi server. Cuba lagi.');
     btn.disabled = false;
     btn.textContent = '📤 Hantar Maklumat Perusahaan';
   }
@@ -1235,7 +1370,7 @@ function resetRegForm() {
   document.getElementById('reg-form').style.display    = 'block';
   document.getElementById('reg-success').style.display = 'none';
   document.getElementById('reg-form').reset();
-  document.getElementById('reg-alert').innerHTML = '';
+  setAlert(document.getElementById('reg-alert'), '', '');
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1310,7 +1445,7 @@ function renderAdminTab(tab) {
       <td><span class="badge badge-gray">${escHtml(r.negeri)}</span></td>
       <td style="font-size:12px">${escHtml(r.jenis)}</td>
       <td style="font-size:12px">${escHtml(r.email)}</td>
-      <td><span class="badge ${stCls}">${stLabel}</span></td>
+      <td><span class="badge ${stCls}">${escHtml(stLabel)}</span></td>
       <td>
         <div class="admin-action-row">
           ${stLabel !== 'APPROVED' ? `<button class="btn-approve" onclick="approveRecord(${r.rowIndex}, this)">✅ Lulus</button>` : ''}
@@ -1373,11 +1508,41 @@ async function bulkApprove() {
 /* ════════════════════════════════════════════════════════════
    UTILITI
 ════════════════════════════════════════════════════════════ */
+function setAlert(el, type, msg) {
+  if (!el) return;
+  el.textContent = '';
+  if (!msg) return;
+  const div = document.createElement('div');
+  div.className = 'alert ' + (type === 'error' ? 'alert-error' : type === 'success' ? 'alert-success' : 'alert-info');
+  div.style.marginTop = '12px';
+  div.textContent = msg;
+  el.appendChild(div);
+}
+
+function safeExternalUrl(raw, allowedHosts) {
+  const value = String(raw || '').trim();
+  if (!value) return '';
+  try {
+    const url = new URL(value.startsWith('http') ? value : 'https://' + value);
+    if (url.protocol !== 'https:') return '';
+    const host = url.hostname.toLowerCase().replace(/^www\./, '');
+    if (!allowedHosts.some(h => host === h || host.endsWith('.' + h))) return '';
+    return url.href;
+  } catch (e) {
+    return '';
+  }
+}
+
+function buildFacebookUrl(value) {
+  return safeExternalUrl(value, ['facebook.com', 'fb.com']);
+}
 function buildWaUrl(wa) {
-  if (!wa) return '';
-  if (wa.includes('wasap.my')) return 'https://' + wa.replace(/^https?:\/\//, '');
-  const digits = wa.replace(/\D/g, '');
-  if (digits.length >= 10) return 'https://wa.me/' + digits;
+  const value = String(wa || '').trim();
+  if (!value) return '';
+  const wasap = safeExternalUrl(value, ['wasap.my']);
+  if (wasap) return wasap;
+  const digits = value.replace(/\D/g, '');
+  if (digits.length >= 10 && digits.length <= 15) return 'https://wa.me/' + digits;
   return '';
 }
 
