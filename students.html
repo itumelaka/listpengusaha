@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Direktori Pelajar & Graduan — Portal Pengusaha Ternakan DVS Malaysia" />
+  <title>Pelajar & Graduan — Portal DVS Malaysia</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-900: #0d3b22;
+      --green-800: #145c33;
+      --green-700: #1a7040;
+      --green-600: #1e8b4e;
+      --green-500: #22a55e;
+      --green-400: #4dbb7e;
+      --green-100: #e8f5ee;
+      --green-50:  #f2faf5;
+
+      --blue-800: #1e40af;
+      --blue-600: #2563eb;
+      --blue-100: #dbeafe;
+      --blue-50:  #eff6ff;
+
+      --gold:     #c9932a;
+      --gold-light: #fef3c7;
+
+      --neutral-900: #111827;
+      --neutral-700: #374151;
+      --neutral-500: #6b7280;
+      --neutral-300: #d1d5db;
+      --neutral-100: #f3f4f6;
+      --neutral-50:  #f9fafb;
+
+      --red: #dc2626;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.10);
+      --shadow-lg: 0 10px 30px rgba(0,0,0,.12);
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --transition: 0.2s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--neutral-50);
+      color: var(--neutral-900);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    /* ─── HEADER ─────────────────────────────── */
+    .site-header {
+      background: linear-gradient(135deg, #0d2d5e 0%, #1e40af 100%);
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.25);
+    }
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 64px;
+    }
+    .header-logos { display: flex; align-items: center; gap: 12px; }
+    .header-logos img { height: 38px; width: auto; }
+    .header-logos .divider { width: 1px; height: 32px; background: rgba(255,255,255,.3); }
+    .header-title { flex: 1; color: #fff; }
+    .header-title h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700; line-height: 1.2; }
+    .header-title span { font-size: 11px; opacity: .75; display: block; }
+    .header-nav { display: flex; align-items: center; gap: 6px; }
+    .nav-btn {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      color: #fff;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,.22); }
+    .nav-btn.home { background: rgba(255,255,255,.18); }
+
+    /* ─── HERO ───────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #0d2d5e 0%, #1e40af 100%);
+      padding: 32px 24px 40px;
+      color: #fff;
+    }
+    .hero-inner { max-width: 1280px; margin: 0 auto; }
+    .hero h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+    .hero p { opacity: .8; font-size: 14px; margin-bottom: 24px; max-width: 600px; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      text-align: center;
+    }
+    .stat-card .icon { font-size: 26px; margin-bottom: 6px; display: block; }
+    .stat-card .value { font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+    .stat-card .label { font-size: 12px; opacity: .8; }
+
+    /* ─── INFO BAND ──────────────────────────── */
+    .info-band {
+      background: #fff;
+      border-bottom: 1px solid var(--neutral-300);
+      padding: 20px 24px;
+    }
+    .info-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    .info-card {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+    }
+    .info-card .icon { font-size: 24px; flex-shrink: 0; }
+    .info-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+    .info-card p  { font-size: 12px; color: var(--neutral-500); line-height: 1.5; }
+
+    /* ─── TABS ───────────────────────────────── */
+    .tab-section {
+      max-width: 1280px;
+      margin: 24px auto 0;
+      padding: 0 24px;
+    }
+    .tab-bar {
+      display: flex;
+      gap: 4px;
+      background: #fff;
+      padding: 5px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+      border: 1px solid var(--neutral-300);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--neutral-500);
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #0d2d5e, #1e40af);
+      color: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ─── FILTER BAR ─────────────────────────── */
+    .filter-bar {
+      background: #fff;
+      border: 1px solid var(--neutral-300);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+    }
+    .search-wrap { flex: 1; min-width: 180px; position: relative; }
+    .search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--neutral-400); pointer-events: none; }
+    .filter-input {
+      width: 100%;
+      padding: 9px 12px 9px 36px;
+      border: 1.5px solid var(--neutral-300);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: inherit;
+      transition: var(--transition);
+    }
+    .filter-input:focus { outline: none; border-color: var(--blue-600); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+    .filter-select {
+      padding: 9px 12px;
+      border: 1.5px solid var(--neutral-300);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: inherit;
+      background: #fff;
+      min-width: 150px;
+      transition: var(--transition);
+    }
+    .filter-select:focus { outline: none; border-color: var(--blue-600); }
+    .filter-count { font-size: 12px; color: var(--neutral-500); white-space: nowrap; font-weight: 500; }
+
+    /* ─── DIREKTORI CARDS ────────────────────── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .student-card {
+      background: #fff;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--neutral-200);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .student-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .card-header {
+      background: linear-gradient(135deg, #0d2d5e, #1e40af);
+      padding: 16px;
+      color: #fff;
+      position: relative;
+    }
+    .card-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 8px;
+      border: 2px solid rgba(255,255,255,.3);
+    }
+    .card-name { font-weight: 700; font-size: 15px; line-height: 1.2; }
+    .card-uni  { font-size: 12px; opacity: .8; margin-top: 2px; }
+    .card-tahap {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255,255,255,.2);
+      border: 1px solid rgba(255,255,255,.3);
+      color: #fff;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .card-body { padding: 14px 16px; }
+    .card-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 7px;
+      font-size: 13px;
+    }
+    .card-row .lbl { color: var(--neutral-500); min-width: 70px; flex-shrink: 0; font-size: 12px; }
+    .card-row .val { color: var(--neutral-900); font-weight: 500; }
+    .card-footer {
+      padding: 10px 16px 14px;
+      display: flex;
+      gap: 8px;
+      border-top: 1px solid var(--neutral-100);
+    }
+    .btn-wa {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: #dcfce7;
+      color: #15803d;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+    .btn-wa:hover { background: #bbf7d0; }
+    .btn-email {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: var(--blue-50);
+      color: var(--blue-800);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .btn-email:hover { background: var(--blue-100); }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-li     { background: #fef3c7; color: #92400e; }
+    .badge-kerja  { background: var(--green-100); color: var(--green-800); }
+    .badge-sambil { background: var(--blue-100); color: var(--blue-800); }
+    .badge-any    { background: var(--neutral-100); color: var(--neutral-700); }
+
+    /* ─── LOADING / EMPTY ────────────────────── */
+    .loading { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 60px; color: var(--neutral-500); }
+    .spinner { width: 24px; height: 24px; border: 3px solid var(--neutral-300); border-top-color: var(--blue-600); border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .empty-state { text-align: center; padding: 60px 24px; color: var(--neutral-500); }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; display: block; }
+    .empty-state h3 { font-size: 18px; color: var(--neutral-700); margin-bottom: 6px; }
+
+    /* ─── BORANG ─────────────────────────────── */
+    .form-wrap {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: 36px;
+      margin-bottom: 32px;
+    }
+    .form-wrap h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px; color: var(--blue-800); margin-bottom: 6px; }
+    .form-wrap .subtitle { color: var(--neutral-500); font-size: 14px; margin-bottom: 28px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--neutral-700); }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--neutral-300);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--neutral-900);
+      transition: var(--transition);
+      background: #fff;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--blue-600);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 70px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .checkbox-label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; font-size: 13px; }
+    .checkbox-label input { width: auto; margin-top: 3px; accent-color: var(--blue-600); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #0d2d5e, #1e40af);
+      color: #fff;
+      width: 100%;
+    }
+    .btn-primary:hover:not(:disabled) { opacity: .92; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    .btn-primary:disabled { background: var(--neutral-300); cursor: not-allowed; }
+    .btn-outline { background: transparent; border: 1.5px solid var(--blue-600); color: var(--blue-800); }
+    .btn-outline:hover { background: var(--blue-50); }
+
+    .alert { padding: 12px 16px; border-radius: var(--radius-sm); font-size: 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .alert-success { background: var(--green-100); color: var(--green-800); border: 1px solid #bbf7d0; }
+    .alert-error   { background: #fee2e2; color: var(--red); border: 1px solid #fecaca; }
+    .alert-info    { background: var(--blue-50); color: var(--blue-800); border: 1px solid #bfdbfe; }
+
+    /* ─── TOAST ─────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--neutral-900);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+      z-index: 999;
+      max-width: 360px;
+      text-align: center;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast.success { background: var(--green-700); }
+    #toast.error   { background: var(--red); }
+
+    /* ─── FOOTER ────────────────────────────── */
+    footer {
+      background: var(--neutral-900);
+      color: rgba(255,255,255,.6);
+      text-align: center;
+      padding: 20px 24px;
+      font-size: 12px;
+      margin-top: 40px;
+    }
+    footer strong { color: rgba(255,255,255,.9); }
+    footer a { color: rgba(255,255,255,.7); text-decoration: none; }
+    footer a:hover { color: #fff; }
+
+    /* ─── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 1024px) {
+      .cards-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .info-inner { grid-template-columns: 1fr; }
+      .form-row, .form-row-3 { grid-template-columns: 1fr; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .header-title span { display: none; }
+    }
+    @media (max-width: 480px) {
+      .hero { padding: 20px 16px 28px; }
+      .tab-section { padding: 0 12px; }
+      .form-wrap { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── HEADER ──────────────────────────────── -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-logos">
+      <img src="https://i.ibb.co/QvRWvqmk/1-Jata-KPKM.png" alt="Jata KPKM" />
+      <div class="divider"></div>
+      <img src="https://i.ibb.co/XfcvhqxC/2-Logo-DVS.png" alt="Logo DVS" />
+    </div>
+    <div class="header-title">
+      <h1>Pelajar &amp; Graduan — Industri Ternakan</h1>
+      <span>Portal Direktori Pengusaha Ternakan DVS Malaysia</span>
+    </div>
+    <nav class="header-nav">
+      <a href="index.html" class="nav-btn home">🐄 Portal Utama</a>
+    </nav>
+  </div>
+</header>
+
+<div id="toast"></div>
+
+<!-- ─── HERO ─────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-inner">
+    <h2>🎓 Direktori Pelajar &amp; Graduan</h2>
+    <p>Platform untuk pelajar dan graduan bidang ternakan mendaftarkan diri bagi tujuan <strong>Latihan Industri</strong> dan <strong>peluang pekerjaan</strong> dengan pengusaha seluruh Malaysia.</p>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="icon">🎓</span>
+        <div class="value" id="stat-total">—</div>
+        <div class="label">Jumlah Pelajar</div>
+      </div>
+      <div class="stat-card">
+        <span class="icon">📋</span>
+        <div class="value" id="stat-li">—</div>
+        <div class="label">Cari Latihan Industri</div>
+      </div>
+      <div class="stat-card">
+        <span class="icon">💼</span>
+        <div class="value" id="stat-kerja">—</div>
+        <div class="label">Cari Pekerjaan</div>
+      </div>
+      <div class="stat-card">
+        <span class="icon">🗺️</span>
+        <div class="value" id="stat-negeri">—</div>
+        <div class="label">Negeri Terlibat</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── INFO BAND ─────────────────────────────── -->
+<div class="info-band">
+  <div class="info-inner">
+    <div class="info-card" style="background:#eff6ff;border:1px solid #bfdbfe">
+      <span class="icon">🤝</span>
+      <div>
+        <h4 style="color:#1e40af">Untuk Penternak</h4>
+        <p>Cari pelajar yang sesuai untuk Latihan Industri atau pekerja baharu. Hubungi terus melalui WhatsApp.</p>
+      </div>
+    </div>
+    <div class="info-card" style="background:var(--green-50);border:1px solid #c6e8d4">
+      <span class="icon">🎯</span>
+      <div>
+        <h4 style="color:var(--green-800)">Untuk Pelajar & Graduan</h4>
+        <p>Daftarkan diri anda supaya penternak seluruh Malaysia boleh menghubungi anda terus.</p>
+      </div>
+    </div>
+    <div class="info-card" style="background:var(--gold-light);border:1px solid #fcd34d;cursor:pointer" onclick="switchTab('daftar')">
+      <span class="icon">✏️</span>
+      <div>
+        <h4 style="color:#92400e">Daftar Sekarang — Percuma</h4>
+        <p>Isi borang ringkas. Profil anda akan dipaparkan kepada semua penternak dalam direktori ini.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TABS ──────────────────────────────────── -->
+<div class="tab-section">
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-direktori" onclick="switchTab('direktori')">🎓 Direktori Pelajar</button>
+    <button class="tab-btn" id="tab-daftar" onclick="switchTab('daftar')">✏️ Daftar / Kemaskini Profil</button>
+  </div>
+
+  <!-- ── TAB: DIREKTORI ── -->
+  <div id="view-direktori">
+
+    <!-- Filter -->
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" class="filter-input" id="search-input" placeholder="Cari nama, universiti, bidang..." oninput="filterStudents()" />
+      </div>
+      <select class="filter-select" id="filter-negeri" onchange="filterStudents()">
+        <option value="">Semua Negeri</option>
+        <option>Johor</option><option>Kedah</option><option>Kelantan</option>
+        <option>Melaka</option><option>Negeri Sembilan</option><option>Pahang</option>
+        <option>Perak</option><option>Perlis</option><option>Pulau Pinang</option>
+        <option>Sabah</option><option>Sarawak</option><option>Selangor</option>
+        <option>Terengganu</option><option>W.P. Kuala Lumpur</option>
+        <option>W.P. Labuan</option><option>W.P. Putrajaya</option>
+      </select>
+      <select class="filter-select" id="filter-jenis" onchange="filterStudents()">
+        <option value="">Semua Tujuan</option>
+        <option>Latihan Industri</option>
+        <option>Kerja Tetap</option>
+        <option>Kerja Sambilan</option>
+      </select>
+      <select class="filter-select" id="filter-tahap" onchange="filterStudents()">
+        <option value="">Semua Tahap</option>
+        <option>SPM</option>
+        <option>Diploma</option>
+        <option>Degree</option>
+        <option>Master</option>
+        <option>PhD</option>
+        <option>Graduan</option>
+      </select>
+      <button class="btn btn-outline" style="padding:8px 14px;font-size:13px;white-space:nowrap" onclick="loadStudents()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Muat Semula
+      </button>
+      <span class="filter-count" id="filter-count"></span>
+    </div>
+
+    <!-- Cards -->
+    <div id="dir-loading" class="loading">
+      <div class="spinner"></div>
+      <span>Sedang memuatkan data pelajar...</span>
+    </div>
+    <div id="cards-grid" class="cards-grid" style="display:none"></div>
+    <div id="dir-empty" class="empty-state" style="display:none">
+      <span class="icon">🔍</span>
+      <h3>Tiada rekod dijumpai</h3>
+      <p>Cuba tukar kata carian atau penapis. Atau <button class="btn-outline" style="padding:4px 12px;font-size:13px;border-radius:4px;cursor:pointer;border:1.5px solid var(--blue-600);color:var(--blue-800);background:transparent;font-family:inherit" onclick="switchTab('daftar')">daftar sebagai pelajar pertama!</button></p>
+    </div>
+
+  </div>
+
+  <!-- ── TAB: DAFTAR ── -->
+  <div id="view-daftar" style="display:none">
+    <div class="form-wrap">
+      <h3>✏️ Daftar / Kemaskini Profil Anda</h3>
+      <p class="subtitle">Isi maklumat di bawah untuk disenaraikan dalam direktori ini. Penternak seluruh Malaysia boleh menghubungi anda terus melalui WhatsApp atau e-mel.</p>
+
+      <div id="form-alert"></div>
+      <div id="form-success" style="display:none">
+        <div class="alert alert-success">
+          <span>✅</span>
+          <div>
+            <strong>Profil berjaya dihantar!</strong><br/>
+            Maklumat anda akan disemak dan dipaparkan dalam masa 1–2 hari bekerja. Terima kasih!
+          </div>
+        </div>
+        <button class="btn btn-outline" style="margin-top:12px;width:auto;padding:9px 20px" onclick="resetForm()">Daftar Pelajar Lain</button>
+      </div>
+
+      <form id="reg-form" onsubmit="submitForm(event)">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="s-nama">Nama Penuh *</label>
+            <input type="text" id="s-nama" placeholder="Nama seperti dalam kad pengenalan" required />
+          </div>
+          <div class="form-group">
+            <label for="s-wa">No. WhatsApp *</label>
+            <input type="tel" id="s-wa" placeholder="+601X-XXXXXXX" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="s-email">Alamat E-mel *</label>
+            <input type="email" id="s-email" placeholder="nama@email.com" required />
+          </div>
+          <div class="form-group">
+            <label for="s-negeri">Negeri Asal / Boleh Ditempatkan *</label>
+            <select id="s-negeri" required>
+              <option value="">— Pilih Negeri —</option>
+              <option>Johor</option><option>Kedah</option><option>Kelantan</option>
+              <option>Melaka</option><option>Negeri Sembilan</option><option>Pahang</option>
+              <option>Perak</option><option>Perlis</option><option>Pulau Pinang</option>
+              <option>Sabah</option><option>Sarawak</option><option>Selangor</option>
+              <option>Terengganu</option><option>W.P. Kuala Lumpur</option>
+              <option>W.P. Labuan</option><option>W.P. Putrajaya</option>
+              <option>Mana-mana Negeri</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="s-uni">Universiti / Kolej / Institut *</label>
+            <input type="text" id="s-uni" placeholder="Cth: UPM, UiTM, Politeknik KL" required />
+          </div>
+          <div class="form-group">
+            <label for="s-tahap">Tahap Pengajian *</label>
+            <select id="s-tahap" required>
+              <option value="">— Pilih Tahap —</option>
+              <option>SPM</option>
+              <option>Diploma</option>
+              <option>Degree</option>
+              <option>Master</option>
+              <option>PhD</option>
+              <option>Graduan (Sudah Tamat)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="s-bidang">Bidang Pengajian / Kepakaran *</label>
+          <select id="s-bidang" required>
+            <option value="">— Pilih Bidang —</option>
+            <option>Sains Ternakan / Penternakan</option>
+            <option>Veterinar</option>
+            <option>Agrikultur / Pertanian</option>
+            <option>Akuakultur / Perikanan</option>
+            <option>Bioteknologi Pertanian</option>
+            <option>Pengurusan Ladang</option>
+            <option>Pemprosesan Makanan / Teknologi Makanan</option>
+            <option>Kejuruteraan Pertanian</option>
+            <option>Perniagaan / Pengurusan Agribisnes</option>
+            <option>IT / Teknologi Maklumat</option>
+            <option>Lain-lain</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="s-tujuan">Tujuan Pendaftaran *</label>
+            <select id="s-tujuan" required>
+              <option value="">— Pilih Tujuan —</option>
+              <option>Latihan Industri (LI)</option>
+              <option>Kerja Tetap</option>
+              <option>Kerja Sambilan / Part-time</option>
+              <option>LI & Kerja Tetap</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="s-tempoh">Tempoh Tersedia</label>
+            <input type="text" id="s-tempoh" placeholder="Cth: Jun – Ogos 2026 / Segera" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="s-bio">Ringkasan Diri <span style="font-weight:400;color:var(--neutral-500);font-size:12px">(Pilihan)</span></label>
+          <textarea id="s-bio" placeholder="Ceritakan sedikit tentang diri anda, pengalaman, kemahiran atau minat dalam bidang ternakan..."></textarea>
+        </div>
+
+        <div class="form-group" style="margin-top:8px">
+          <label class="checkbox-label">
+            <input type="checkbox" id="s-setuju" required />
+            <span>Saya <strong>SETUJU</strong> maklumat profil saya dipaparkan kepada awam dalam Portal Direktori Pengusaha Ternakan DVS Malaysia untuk tujuan mencari peluang Latihan Industri dan pekerjaan.</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top:20px" id="reg-submit-btn">
+          🎓 Hantar Profil Saya
+        </button>
+
+      </form>
+
+      <div style="margin-top:16px;padding:12px 14px;background:var(--neutral-50);border-radius:var(--radius-sm);font-size:12px;color:var(--neutral-500)">
+        🔒 <strong>Perlindungan Data:</strong> Maklumat anda dilindungi di bawah Akta Perlindungan Data Peribadi 2010. Anda boleh meminta pemadaman profil pada bila-bila masa dengan menghubungi pentadbir.
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end tab-section -->
+
+<!-- ─── FOOTER ─────────────────────────────────── -->
+<footer>
+  <strong>Copyright © 2026 — Portal Direktori Pengusaha Ternakan DVS Malaysia</strong><br/>
+  Inisiatif Institut Teknologi Unggas 2026 | Jabatan Perkhidmatan Veterinar Malaysia<br/>
+  <a href="index.html">← Kembali ke Portal Utama</a>
+</footer>
+
+<script>
+/* ════════════════════════════════════════
+   KONFIGURASI
+════════════════════════════════════════ */
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx1gi7in8JLjUASuUTonA5cF8HCy53aMl55mZK2fgOjwCGGSzk4cvHVrl3KZUgs-6-a/exec';
+const SHEET_STUDENTS = 'Pelajar'; // nama sheet dalam spreadsheet
+
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+let allStudents = [];
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', () => {
+  loadStudents();
+  // Kalau URL ada ?daftar, terus buka tab daftar
+  if (location.search.includes('daftar')) switchTab('daftar');
+});
+
+/* ════════════════════════════════════════
+   TABS
+════════════════════════════════════════ */
+function switchTab(tab) {
+  document.getElementById('view-direktori').style.display = tab === 'direktori' ? 'block' : 'none';
+  document.getElementById('view-daftar').style.display    = tab === 'daftar'    ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'daftar') window.scrollTo({ top: 400, behavior: 'smooth' });
+}
+
+/* ════════════════════════════════════════
+   API
+════════════════════════════════════════ */
+async function gasGet(params) {
+  const url = GAS_URL + '?' + new URLSearchParams(params).toString();
+  const res = await fetch(url);
+  return res.json();
+}
+
+async function gasPost(body) {
+  const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(body) });
+  return res.json();
+}
+
+/* ════════════════════════════════════════
+   LOAD PELAJAR
+════════════════════════════════════════ */
+async function loadStudents() {
+  document.getElementById('dir-loading').style.display = 'flex';
+  document.getElementById('cards-grid').style.display  = 'none';
+  document.getElementById('dir-empty').style.display   = 'none';
+
+  try {
+    const data = await gasGet({ action: 'getStudents' });
+    allStudents = data.data || [];
+    renderStudents(allStudents);
+    updateStats(allStudents);
+  } catch (err) {
+    document.getElementById('dir-loading').innerHTML =
+      '<div style="text-align:center;padding:32px;color:var(--neutral-500)">⚠️ Gagal memuatkan data.<br/><button onclick="loadStudents()" style="margin-top:12px;padding:8px 16px;border:1.5px solid var(--blue-600);border-radius:4px;background:transparent;color:var(--blue-800);cursor:pointer;font-family:inherit">Cuba Semula</button></div>';
+  }
+}
+
+function renderStudents(students) {
+  document.getElementById('dir-loading').style.display = 'none';
+
+  if (!students.length) {
+    document.getElementById('cards-grid').style.display = 'none';
+    document.getElementById('dir-empty').style.display  = 'block';
+    document.getElementById('filter-count').textContent = '0 pelajar';
+    return;
+  }
+
+  document.getElementById('dir-empty').style.display  = 'none';
+  document.getElementById('cards-grid').style.display = 'grid';
+  document.getElementById('filter-count').textContent  = students.length + ' pelajar';
+
+  const emojis = ['🧑‍🎓','👨‍🎓','👩‍🎓','🎓','👨‍🔬','👩‍🔬','👨‍🌾','👩‍🌾'];
+
+  document.getElementById('cards-grid').innerHTML = students.map((s, i) => {
+    const waUrl     = buildWaUrl(s.wa);
+    const tujuanBadge = getTujuanBadge(s.tujuan);
+    const avatar    = emojis[i % emojis.length];
+
+    return `<div class="student-card">
+      <div class="card-header">
+        <div class="card-avatar">${avatar}</div>
+        <div class="card-name">${escHtml(s.nama)}</div>
+        <div class="card-uni">${escHtml(s.universiti || '—')}</div>
+        <span class="card-tahap">${escHtml(s.tahap || '—')}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-row">
+          <span class="lbl">Bidang</span>
+          <span class="val">${escHtml(s.bidang || '—')}</span>
+        </div>
+        <div class="card-row">
+          <span class="lbl">Negeri</span>
+          <span class="val">📍 ${escHtml(s.negeri || '—')}</span>
+        </div>
+        <div class="card-row">
+          <span class="lbl">Tujuan</span>
+          <span class="val"><span class="badge ${tujuanBadge.cls}">${escHtml(s.tujuan || '—')}</span></span>
+        </div>
+        ${s.tempoh ? `<div class="card-row"><span class="lbl">Tersedia</span><span class="val">🗓️ ${escHtml(s.tempoh)}</span></div>` : ''}
+        ${s.bio ? `<div style="margin-top:8px;padding:8px;background:var(--neutral-50);border-radius:4px;font-size:12px;color:var(--neutral-600);line-height:1.5">${escHtml(s.bio.substring(0,120))}${s.bio.length > 120 ? '...' : ''}</div>` : ''}
+      </div>
+      <div class="card-footer">
+        ${waUrl ? `<a href="${waUrl}" target="_blank" rel="noopener" class="btn-wa">💬 WhatsApp</a>` : ''}
+        ${s.email ? `<a href="mailto:${escHtml(s.email)}" class="btn-email">📧 E-mel</a>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateStats(students) {
+  const negeri = new Set();
+  let li = 0, kerja = 0;
+  students.forEach(s => {
+    negeri.add(s.negeri);
+    const t = (s.tujuan || '').toLowerCase();
+    if (t.includes('latihan') || t.includes('li')) li++;
+    if (t.includes('kerja tetap')) kerja++;
+  });
+  animateCount('stat-total',  students.length);
+  animateCount('stat-li',     li);
+  animateCount('stat-kerja',  kerja);
+  animateCount('stat-negeri', negeri.size);
+}
+
+/* ════════════════════════════════════════
+   FILTER
+════════════════════════════════════════ */
+function filterStudents() {
+  const q      = document.getElementById('search-input').value.toLowerCase();
+  const negeri = document.getElementById('filter-negeri').value;
+  const jenis  = document.getElementById('filter-jenis').value;
+  const tahap  = document.getElementById('filter-tahap').value;
+
+  const filtered = allStudents.filter(s => {
+    const matchQ = !q || [s.nama, s.universiti, s.bidang, s.negeri, s.bio]
+      .some(f => (f || '').toLowerCase().includes(q));
+    const matchN = !negeri || (s.negeri || '').toLowerCase().includes(negeri.toLowerCase());
+    const matchJ = !jenis  || (s.tujuan || '').toLowerCase().includes(jenis.toLowerCase());
+    const matchT = !tahap  || (s.tahap  || '').toLowerCase().includes(tahap.toLowerCase());
+    return matchQ && matchN && matchJ && matchT;
+  });
+  renderStudents(filtered);
+}
+
+/* ════════════════════════════════════════
+   SUBMIT BORANG
+════════════════════════════════════════ */
+async function submitForm(e) {
+  e.preventDefault();
+  const btn = document.getElementById('reg-submit-btn');
+  btn.disabled    = true;
+  btn.textContent = '⏳ Menghantar...';
+  document.getElementById('form-alert').innerHTML = '';
+
+  const payload = {
+    action:      'submitStudent',
+    nama:        document.getElementById('s-nama').value.trim(),
+    wa:          document.getElementById('s-wa').value.trim(),
+    email:       document.getElementById('s-email').value.trim(),
+    negeri:      document.getElementById('s-negeri').value,
+    universiti:  document.getElementById('s-uni').value.trim(),
+    tahap:       document.getElementById('s-tahap').value,
+    bidang:      document.getElementById('s-bidang').value,
+    tujuan:      document.getElementById('s-tujuan').value,
+    tempoh:      document.getElementById('s-tempoh').value.trim(),
+    bio:         document.getElementById('s-bio').value.trim(),
+    setuju:      document.getElementById('s-setuju').checked ? 'SETUJU' : ''
+  };
+
+  try {
+    const res = await gasPost(payload);
+    if (res.error) {
+      document.getElementById('form-alert').innerHTML =
+        `<div class="alert alert-error">⚠️ ${res.error}</div>`;
+      btn.disabled    = false;
+      btn.textContent = '🎓 Hantar Profil Saya';
+      return;
+    }
+    document.getElementById('reg-form').style.display     = 'none';
+    document.getElementById('form-success').style.display = 'block';
+    showToast('Profil berjaya dihantar!', 'success');
+  } catch (err) {
+    document.getElementById('form-alert').innerHTML =
+      `<div class="alert alert-error">⚠️ Gagal menghubungi server. Cuba lagi.</div>`;
+    btn.disabled    = false;
+    btn.textContent = '🎓 Hantar Profil Saya';
+  }
+}
+
+function resetForm() {
+  document.getElementById('reg-form').style.display     = 'block';
+  document.getElementById('form-success').style.display = 'none';
+  document.getElementById('reg-form').reset();
+  document.getElementById('form-alert').innerHTML = '';
+}
+
+/* ════════════════════════════════════════
+   UTILITI
+════════════════════════════════════════ */
+function buildWaUrl(wa) {
+  if (!wa) return '';
+  if (wa.includes('wasap.my')) return 'https://' + wa.replace(/^https?:\/\//, '');
+  const digits = wa.replace(/\D/g, '');
+  if (digits.length >= 10) return 'https://wa.me/' + digits;
+  return '';
+}
+
+function getTujuanBadge(tujuan) {
+  const t = (tujuan || '').toLowerCase();
+  if (t.includes('latihan') || t.includes('li')) return { cls: 'badge-li' };
+  if (t.includes('tetap'))   return { cls: 'badge-kerja' };
+  if (t.includes('sambilan')) return { cls: 'badge-sambil' };
+  return { cls: 'badge-any' };
+}
+
+function escHtml(str) {
+  return String(str || '').replace(/[&<>"']/g, m =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function animateCount(id, target) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let t = 0;
+  const dur = 700, step = 16;
+  const timer = setInterval(() => {
+    t += step;
+    el.textContent = Math.round(target * Math.min(t / dur, 1));
+    if (t >= dur) { el.textContent = target; clearInterval(timer); }
+  }, step);
+}
+
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className   = 'show ' + (type || '');
+  setTimeout(() => el.className = '', 3500);
+}
+</script>
+</body>
+</html>
