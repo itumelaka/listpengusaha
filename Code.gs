@@ -15,6 +15,7 @@ const CONFIG = {
   SHEET_RESPONSES: 'Form Responses 1',   // sheet data utama (dari Google Form lama)
   SHEET_CLEANED:   'DataBersih',         // sheet data yang telah disemak & diluluskan
   SHEET_AUDIT:     'AuditLog',           // log semua tindakan admin
+  SHEET_STUDENTS:  'Pelajar',             // direktori pelajar & graduan
   ADMIN_EMAIL:     'itumelaka@gmail.com',
   OTP_EXPIRY_MIN:  10,                   // OTP tamat dalam 10 minit
   ALLOWED_ORIGINS: [
@@ -41,6 +42,7 @@ function doGet(e) {
     switch (action) {
       case 'getDirectory':    return handleGetDirectory(e);
       case 'getStats':        return handleGetStats(e);
+      case 'getStudents':     return handleGetStudents(e);
       case 'ping':            return jsonResponse({ status: 'ok', ts: new Date().toISOString() });
       default:
         return jsonResponse({ error: 'Tindakan tidak dikenali: ' + action }, 400);
@@ -64,6 +66,7 @@ function doPost(e) {
       case 'requestOtp':      return handleRequestOtp(payload);
       case 'verifyOtp':       return handleVerifyOtp(payload);
       case 'submitForm':      return handleSubmitForm(payload);
+      case 'submitStudent':   return handleSubmitStudent(payload);
       case 'approveRecord':   return handleApprove(payload);
       case 'rejectRecord':    return handleReject(payload);
       case 'getAdminData':    return handleGetAdminData(payload);
@@ -723,4 +726,184 @@ function migrateApproveOldRecords() {
 function testEndpoint() {
   const result = handleGetDirectory({ parameter: {} });
   Logger.log(result.getContent());
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FUNGSI PELAJAR & GRADUAN
+// ═══════════════════════════════════════════════════════════════
+
+/** Dapatkan direktori pelajar (awam) */
+function handleGetStudents(e) {
+  const ss    = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  let sheet   = ss.getSheetByName(CONFIG.SHEET_STUDENTS);
+
+  // Auto-cipta sheet kalau belum ada
+  if (!sheet) {
+    sheet = ss.insertSheet(CONFIG.SHEET_STUDENTS);
+    sheet.appendRow([
+      'Timestamp','Nama','WA','Email','Negeri','Universiti',
+      'Tahap','Bidang','Tujuan','Tempoh','Bio','Setuju',
+      'Status','ApprovedBy','ApprovedAt','UpdatedAt','ReviewNote'
+    ]);
+    return jsonResponse({ status: 'ok', count: 0, data: [] });
+  }
+
+  const rows    = sheet.getDataRange().getValues();
+  if (rows.length < 2) return jsonResponse({ status: 'ok', count: 0, data: [] });
+
+  const headers = rows[0];
+  const COL     = getStudentColumnIndex(headers);
+  const records = [];
+
+  for (let i = 1; i < rows.length; i++) {
+    const row    = rows[i];
+    const nama   = String(row[COL.nama]   || '').trim();
+    const status = String(row[COL.status] || '').toUpperCase();
+    const setuju = String(row[COL.setuju] || '').toUpperCase();
+
+    if (!nama) continue;
+    if (setuju && setuju !== 'SETUJU') continue;
+    if (status && status === 'REJECTED') continue;
+
+    records.push({
+      id:         i,
+      nama:       nama,
+      wa:         sanitizeWa(String(row[COL.wa]   || '')),
+      email:      String(row[COL.email]       || '').toLowerCase().trim(),
+      negeri:     toTitleCase(String(row[COL.negeri]     || '')),
+      universiti: String(row[COL.universiti]  || '').trim(),
+      tahap:      String(row[COL.tahap]       || '').trim(),
+      bidang:     String(row[COL.bidang]      || '').trim(),
+      tujuan:     String(row[COL.tujuan]      || '').trim(),
+      tempoh:     String(row[COL.tempoh]      || '').trim(),
+      bio:        String(row[COL.bio]         || '').trim(),
+      timestamp:  String(row[COL.ts]          || '')
+    });
+  }
+
+  return jsonResponse({
+    status:  'ok',
+    count:   records.length,
+    data:    records,
+    updated: new Date().toISOString()
+  });
+}
+
+/** Hantar borang pendaftaran pelajar */
+function handleSubmitStudent(payload) {
+  const { nama, wa, email, negeri, universiti, tahap, bidang, tujuan, tempoh, bio, setuju } = payload;
+
+  // Validasi
+  const errors = [];
+  if (!nama)       errors.push('Nama wajib diisi');
+  if (!wa)         errors.push('No. WhatsApp wajib diisi');
+  if (!email)      errors.push('E-mel wajib diisi');
+  if (!negeri)     errors.push('Negeri wajib dipilih');
+  if (!universiti) errors.push('Universiti wajib diisi');
+  if (!tahap)      errors.push('Tahap pengajian wajib dipilih');
+  if (!bidang)     errors.push('Bidang pengajian wajib dipilih');
+  if (!tujuan)     errors.push('Tujuan pendaftaran wajib dipilih');
+  if (!setuju)     errors.push('Persetujuan data wajib diberikan');
+
+  if (errors.length) return jsonResponse({ error: errors.join('; ') }, 400);
+
+  const ss  = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(CONFIG.SHEET_STUDENTS);
+
+  // Auto-cipta sheet kalau belum ada
+  if (!sheet) {
+    sheet = ss.insertSheet(CONFIG.SHEET_STUDENTS);
+    sheet.appendRow([
+      'Timestamp','Nama','WA','Email','Negeri','Universiti',
+      'Tahap','Bidang','Tujuan','Tempoh','Bio','Setuju',
+      'Status','ApprovedBy','ApprovedAt','UpdatedAt','ReviewNote'
+    ]);
+  }
+
+  // Semak duplikat (e-mel sama dalam 48 jam)
+  const existingRows = sheet.getDataRange().getValues();
+  const since = Date.now() - 48 * 60 * 60 * 1000;
+  for (let i = 1; i < existingRows.length; i++) {
+    const rowTs = new Date(existingRows[i][0]);
+    if (!isNaN(rowTs.getTime()) && rowTs.getTime() < since) continue;
+    if (String(existingRows[i][3]).toLowerCase() === email.toLowerCase()) {
+      return jsonResponse({ error: 'E-mel ini telahpun didaftarkan. Sila hubungi pentadbir untuk kemaskini profil.' }, 409);
+    }
+  }
+
+  const ts = new Date();
+  sheet.appendRow([
+    Utilities.formatDate(ts, 'Asia/Kuala_Lumpur', 'dd/MM/yyyy HH:mm:ss'),
+    nama.trim().toUpperCase(),
+    wa.trim(),
+    email.trim().toLowerCase(),
+    negeri.trim().toUpperCase(),
+    universiti.trim(),
+    tahap.trim(),
+    bidang.trim(),
+    tujuan.trim(),
+    tempoh ? tempoh.trim() : '',
+    bio    ? bio.trim()    : '',
+    'SETUJU',
+    'APPROVED',   // auto-approve pelajar
+    'SYSTEM',
+    ts.toISOString(),
+    ts.toISOString(),
+    ''
+  ]);
+
+  // Notifikasi admin
+  try {
+    MailApp.sendEmail({
+      to:       CONFIG.ADMIN_EMAIL,
+      subject:  '🎓 Pendaftaran Pelajar Baru: ' + nama,
+      htmlBody: `<div style="font-family:Arial,sans-serif;max-width:500px">
+        <h3>Pelajar/Graduan Baru Mendaftar</h3>
+        <p><b>Nama:</b> ${nama}</p>
+        <p><b>E-mel:</b> ${email}</p>
+        <p><b>Universiti:</b> ${universiti}</p>
+        <p><b>Bidang:</b> ${bidang}</p>
+        <p><b>Tujuan:</b> ${tujuan}</p>
+        <p><b>Negeri:</b> ${negeri}</p>
+        <a href="https://docs.google.com/spreadsheets/d/${CONFIG.SPREADSHEET_ID}/edit" 
+           style="background:#1a6b3c;color:#fff;padding:8px 16px;border-radius:4px;text-decoration:none">
+          Lihat dalam Spreadsheet
+        </a>
+      </div>`
+    });
+  } catch (e) { /* abaikan */ }
+
+  return jsonResponse({
+    status:  'ok',
+    message: 'Profil berjaya dihantar. Anda akan tersenarai dalam direktori dalam masa 1-2 hari.'
+  });
+}
+
+/** Index lajur untuk sheet Pelajar */
+function getStudentColumnIndex(headers) {
+  const COL = {
+    ts: 0, nama: 1, wa: 2, email: 3, negeri: 4,
+    universiti: 5, tahap: 6, bidang: 7, tujuan: 8,
+    tempoh: 9, bio: 10, setuju: 11, status: 12,
+    approvedBy: 13, approvedAt: 14, updatedAt: 15, note: 16
+  };
+
+  headers.forEach((h, i) => {
+    const l = h.toString().toLowerCase().trim();
+    if (l === 'timestamp')           COL.ts         = i;
+    else if (l === 'nama')           COL.nama       = i;
+    else if (l === 'wa' || l.includes('telefon') || l.includes('whatsapp')) COL.wa = i;
+    else if (l === 'email')          COL.email      = i;
+    else if (l === 'negeri')         COL.negeri     = i;
+    else if (l.includes('univers'))  COL.universiti = i;
+    else if (l === 'tahap')          COL.tahap      = i;
+    else if (l === 'bidang')         COL.bidang     = i;
+    else if (l === 'tujuan')         COL.tujuan     = i;
+    else if (l === 'tempoh')         COL.tempoh     = i;
+    else if (l === 'bio')            COL.bio        = i;
+    else if (l.includes('setuju'))   COL.setuju     = i;
+    else if (l === 'status')         COL.status     = i;
+  });
+
+  return COL;
 }
