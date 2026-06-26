@@ -981,13 +981,31 @@ let filteredData = [];
 // ===== SHEET CONFIG =====
 // Google Sheet ini ialah public approved data sahaja (tab Approved_Public), bukan Submissions_Raw/private.
 const PUBLIC_SHEET_ID = '1YKzqywmFj9cu0uYQhVGIndmnL4roYV3gYIe4OXoCxL0';
-const PUBLIC_GID = '1096494187';
+const PUBLIC_GID = '2001001';
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${PUBLIC_SHEET_ID}/gviz/tq?tqx=out:json&gid=${PUBLIC_GID}`;
 
-// Backend/API wajib untuk OTP sebenar. Jangan letak API key atau email secret dalam file static ini.
-const AUTH_API_BASE = '';
-const REQUEST_OTP_ENDPOINT = AUTH_API_BASE ? `${AUTH_API_BASE}/otp/request` : '';
-const VERIFY_OTP_ENDPOINT = AUTH_API_BASE ? `${AUTH_API_BASE}/otp/verify` : '';
+// Backend/API Apps Script untuk OTP sebenar. Jangan letak API key atau email secret dalam file static ini.
+const AUTH_API_URL = 'https://script.google.com/macros/s/AKfycbx1gi7in8JLjUASuUTonA5cF8HCy53aMl55mZK2fgOjwCGGSzk4cvHVrl3KZUgs-6-a/exec';
+
+async function callAuthApi(action, payload) {
+  if (!AUTH_API_URL) throw new Error('AUTH_API_URL is not configured');
+
+  // text/plain keeps the Apps Script request simple and avoids browser preflight issues.
+  const res = await fetch(AUTH_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action, ...payload })
+  });
+
+  const text = await res.text();
+  let data = {};
+  try { data = text ? JSON.parse(text) : {}; } catch (e) { data = { ok: res.ok, raw: text }; }
+
+  if (!res.ok || data.ok === false) {
+    throw new Error(data.error || `${action} failed`);
+  }
+  return data;
+}
 
 // ===== AUTH =====
 function isValidEmail(email) {
@@ -1007,20 +1025,14 @@ async function sendOTP() {
     showToast('Sila masukkan alamat e-mel yang sah.', 'error');
     return;
   }
-  if (!REQUEST_OTP_ENDPOINT) {
-    showToast('OTP sebenar memerlukan backend/API. Sila tetapkan AUTH_API_BASE.', 'error');
+  if (!AUTH_API_URL) {
+    showToast('OTP sebenar memerlukan backend/API Apps Script.', 'error');
     return;
   }
 
   setAuthButtonLoading(true);
   try {
-    const res = await fetch(REQUEST_OTP_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ email })
-    });
-    if (!res.ok) throw new Error('OTP request failed');
+    await callAuthApi('requestOtp', { email });
     pendingEmail = email;
     document.getElementById('emailDisplay').textContent = email;
     document.getElementById('step-email').classList.remove('active');
@@ -1050,19 +1062,13 @@ async function verifyOTP() {
   let entered = '';
   for (let i = 0; i < 6; i++) entered += (document.getElementById('otp' + i).value || '');
   if (entered.length < 6) { showToast('Sila lengkapkan 6 digit kod OTP.', 'error'); return; }
-  if (!VERIFY_OTP_ENDPOINT || !pendingEmail) {
+  if (!AUTH_API_URL || !pendingEmail) {
     showToast('OTP sebenar memerlukan backend/API yang lengkap.', 'error');
     return;
   }
 
   try {
-    const res = await fetch(VERIFY_OTP_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ email: pendingEmail, otp: entered })
-    });
-    if (!res.ok) throw new Error('OTP verify failed');
+    await callAuthApi('verifyOtp', { email: pendingEmail, otp: entered });
     isLoggedIn = true;
     document.getElementById('headerNav').style.display = 'flex';
     showPage('dashboard');
@@ -1304,7 +1310,7 @@ function submitForm() {
     status: 'Pending'
   };
 
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbx1gi7in8JLjUASuUTonA5cF8HCy53aMl55mZK2fgOjwCGGSzk4cvHVrl3KZUgs-6-a/exec';
+  const GAS_URL = AUTH_API_URL;
 
   fetch(GAS_URL, {
     method: 'POST',
