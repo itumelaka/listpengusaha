@@ -741,11 +741,11 @@
 
         <div class="info-note">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Mod Demo — Kod OTP dipaparkan untuk tujuan testing sahaja. Kod tidak dihantar ke e-mel sebenar.
+          Kod OTP akan dihantar ke e-mel anda melalui backend/API yang selamat.
         </div>
 
         <button class="clay-btn btn-primary" onclick="sendOTP()">
-          Jana Kod OTP Demo
+          Hantar Kod OTP
         </button>
         <div class="login-divider">atau akses sebagai tetamu</div>
         <button class="clay-btn" style="width:100%;padding:13px;font-size:14px;font-weight:600;color:var(--dvs-green);background:var(--dvs-green-pale);" onclick="guestLogin()">
@@ -759,7 +759,7 @@
           <div style="width:56px;height:56px;background:var(--dvs-blue-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:3px 3px 8px rgba(0,48,135,0.15),-1px -1px 5px rgba(255,255,255,0.8);">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--dvs-blue)" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           </div>
-          <p style="font-size:13.5px;color:var(--text-mid);font-weight:500;line-height:1.5;">Kod OTP demo dijana untuk<br><strong id="emailDisplay" style="color:var(--dvs-blue);"></strong></p>
+          <p style="font-size:13.5px;color:var(--text-mid);font-weight:500;line-height:1.5;">Kod OTP telah dihantar ke<br><strong id="emailDisplay" style="color:var(--dvs-blue);"></strong></p>
         </div>
 
         <label class="form-label" style="text-align:center;">Masukkan Kod OTP</label>
@@ -773,7 +773,7 @@
         </div>
 
         <div class="otp-demo" id="otpDemo">
-          Mod Demo — Kod OTP dipaparkan untuk tujuan testing sahaja: <strong id="demoCode">------</strong>
+          OTP sebenar dihantar melalui e-mel. Kod tidak dipaparkan di laman ini.
         </div>
 
         <button class="clay-btn btn-primary" onclick="verifyOTP()">
@@ -973,7 +973,7 @@
 
 <script>
 // ===== STATE =====
-let currentOTP = '';
+let pendingEmail = '';
 let isLoggedIn = false;
 let allData = [];
 let filteredData = [];
@@ -984,20 +984,54 @@ const PUBLIC_SHEET_ID = '1YKzqywmFj9cu0uYQhVGIndmnL4roYV3gYIe4OXoCxL0';
 const PUBLIC_GID = '1096494187';
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${PUBLIC_SHEET_ID}/gviz/tq?tqx=out:json&gid=${PUBLIC_GID}`;
 
+// Backend/API wajib untuk OTP sebenar. Jangan letak API key atau email secret dalam file static ini.
+const AUTH_API_BASE = '';
+const REQUEST_OTP_ENDPOINT = AUTH_API_BASE ? `${AUTH_API_BASE}/otp/request` : '';
+const VERIFY_OTP_ENDPOINT = AUTH_API_BASE ? `${AUTH_API_BASE}/otp/verify` : '';
+
 // ===== AUTH =====
-function sendOTP() {
-  const email = document.getElementById('emailInput').value.trim();
-  if (!email || !email.includes('@')) {
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function setAuthButtonLoading(isLoading) {
+  const btn = document.querySelector('#step-email .btn-primary');
+  if (!btn) return;
+  btn.disabled = isLoading;
+  btn.innerHTML = isLoading ? '<span class="spinner"></span>Menghantar...' : 'Hantar Kod OTP';
+}
+
+async function sendOTP() {
+  const email = document.getElementById('emailInput').value.trim().toLowerCase();
+  if (!isValidEmail(email)) {
     showToast('Sila masukkan alamat e-mel yang sah.', 'error');
     return;
   }
-  currentOTP = Math.floor(100000 + Math.random() * 900000).toString();
-  document.getElementById('emailDisplay').textContent = email;
-  document.getElementById('demoCode').textContent = currentOTP;
-  document.getElementById('step-email').classList.remove('active');
-  document.getElementById('step-otp').classList.add('active');
-  document.getElementById('otp0').focus();
-  showToast('Kod OTP demo dijana.', 'success');
+  if (!REQUEST_OTP_ENDPOINT) {
+    showToast('OTP sebenar memerlukan backend/API. Sila tetapkan AUTH_API_BASE.', 'error');
+    return;
+  }
+
+  setAuthButtonLoading(true);
+  try {
+    const res = await fetch(REQUEST_OTP_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email })
+    });
+    if (!res.ok) throw new Error('OTP request failed');
+    pendingEmail = email;
+    document.getElementById('emailDisplay').textContent = email;
+    document.getElementById('step-email').classList.remove('active');
+    document.getElementById('step-otp').classList.add('active');
+    document.getElementById('otp0').focus();
+    showToast('Kod OTP telah dihantar ke e-mel.', 'success');
+  } catch(e) {
+    showToast('Gagal menghantar OTP. Sila cuba semula.', 'error');
+  } finally {
+    setAuthButtonLoading(false);
+  }
 }
 
 function otpNext(el, idx) {
@@ -1012,18 +1046,30 @@ function otpNext(el, idx) {
   }
 }
 
-function verifyOTP() {
+async function verifyOTP() {
   let entered = '';
   for (let i = 0; i < 6; i++) entered += (document.getElementById('otp' + i).value || '');
   if (entered.length < 6) { showToast('Sila lengkapkan 6 digit kod OTP.', 'error'); return; }
-  if (entered === currentOTP) {
+  if (!VERIFY_OTP_ENDPOINT || !pendingEmail) {
+    showToast('OTP sebenar memerlukan backend/API yang lengkap.', 'error');
+    return;
+  }
+
+  try {
+    const res = await fetch(VERIFY_OTP_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email: pendingEmail, otp: entered })
+    });
+    if (!res.ok) throw new Error('OTP verify failed');
     isLoggedIn = true;
     document.getElementById('headerNav').style.display = 'flex';
     showPage('dashboard');
     loadSheetData();
     showToast('Log masuk berjaya! Selamat datang.', 'success');
-  } else {
-    showToast('Kod OTP tidak sah. Cuba semula.', 'error');
+  } catch(e) {
+    showToast('Kod OTP tidak sah atau telah tamat tempoh.', 'error');
     for (let i = 0; i < 6; i++) document.getElementById('otp' + i).value = '';
     document.getElementById('otp0').focus();
   }
@@ -1032,6 +1078,7 @@ function verifyOTP() {
 function backToEmail() {
   document.getElementById('step-otp').classList.remove('active');
   document.getElementById('step-email').classList.add('active');
+  pendingEmail = '';
   for (let i = 0; i < 6; i++) document.getElementById('otp' + i).value = '';
 }
 
@@ -1044,6 +1091,7 @@ function guestLogin() {
 
 function doLogout() {
   isLoggedIn = false;
+  pendingEmail = '';
   document.getElementById('headerNav').style.display = 'none';
   document.getElementById('emailInput').value = '';
   document.getElementById('step-otp').classList.remove('active');
@@ -1139,6 +1187,29 @@ function loadDemoData() {
   showToast('Menunjukkan data contoh (tab Approved_Public perlu boleh dibaca oleh website public)', 'success');
 }
 
+function escapeHTML(value) {
+  return String(value || '').replace(/[&<>'"]/g, (char) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    "'": '&#39;',
+    '"': '&quot;'
+  }[char]));
+}
+
+function safeExternalUrl(value, allowedHosts = []) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== 'https:') return '';
+    if (allowedHosts.length && !allowedHosts.some(host => url.hostname === host || url.hostname.endsWith('.' + host))) return '';
+    return url.href;
+  } catch(e) {
+    return '';
+  }
+}
+
 function renderTable() {
   const tbody = document.getElementById('tableBody');
   if (filteredData.length === 0) {
@@ -1147,16 +1218,18 @@ function renderTable() {
   }
   tbody.innerHTML = filteredData.map((r, i) => {
     const badgeClass = getBadgeClass(r.jenis);
-    const waNum = r.telefon.replace(/[^0-9]/g, '');
-    const waLink = waNum ? `<a class="wa-btn" href="https://wa.me/6${waNum.startsWith('0') ? waNum.substring(1) : waNum}" target="_blank">💬 ${r.telefon}</a>` : `<span style="color:var(--text-muted);font-size:12px;">—</span>`;
-    const fbLink = r.facebook ? `<a class="fb-link" href="${r.facebook}" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="#1877F2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>Buka</a>` : `<span style="color:var(--text-muted);font-size:12px;">—</span>`;
-    const date = r.timestamp ? r.timestamp.split(' ')[0] : '—';
+    const waNum = String(r.telefon || '').replace(/[^0-9]/g, '').slice(0, 15);
+    const displayPhone = escapeHTML(r.telefon);
+    const waLink = waNum ? `<a class="wa-btn" href="https://wa.me/6${waNum.startsWith('0') ? waNum.substring(1) : waNum}" target="_blank" rel="noopener noreferrer">💬 ${displayPhone}</a>` : `<span style="color:var(--text-muted);font-size:12px;">—</span>`;
+    const safeFacebook = safeExternalUrl(r.facebook, ['facebook.com', 'fb.com']);
+    const fbLink = safeFacebook ? `<a class="fb-link" href="${safeFacebook}" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="#1877F2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>Buka</a>` : `<span style="color:var(--text-muted);font-size:12px;">—</span>`;
+    const date = r.timestamp ? escapeHTML(String(r.timestamp).split(' ')[0]) : '—';
     return `<tr>
       <td style="color:var(--text-muted);font-size:12px;font-weight:600;">${i+1}</td>
-      <td class="td-name">${r.nama}</td>
-      <td><span class="badge-type ${badgeClass}">${r.jenis || '—'}</span></td>
-      <td>${r.negeri || '—'}</td>
-      <td style="font-size:12.5px;color:var(--text-mid);max-width:160px;">${r.lokasi || '—'}</td>
+      <td class="td-name">${escapeHTML(r.nama)}</td>
+      <td><span class="badge-type ${badgeClass}">${escapeHTML(r.jenis) || '—'}</span></td>
+      <td>${escapeHTML(r.negeri) || '—'}</td>
+      <td style="font-size:12.5px;color:var(--text-mid);max-width:160px;">${escapeHTML(r.lokasi) || '—'}</td>
       <td>${waLink}</td>
       <td>${fbLink}</td>
       <td style="font-size:12px;color:var(--text-muted);">${date}</td>
@@ -1227,7 +1300,8 @@ function submitForm() {
     nama, telefon, negeri, lokasi,
     facebook: document.getElementById('f_fb').value.trim(),
     email, jenis,
-    setuju: 'SETUJU'
+    setuju: 'SETUJU',
+    status: 'Pending'
   };
 
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbx1gi7in8JLjUASuUTonA5cF8HCy53aMl55mZK2fgOjwCGGSzk4cvHVrl3KZUgs-6-a/exec';
