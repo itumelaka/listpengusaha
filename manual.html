@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manual Pengguna — Portal Direktori Pengusaha Ternakan DVS Malaysia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --green-900: #0d3b22;
+      --green-800: #145c33;
+      --green-700: #1a7040;
+      --green-600: #1e8b4e;
+      --green-500: #22a55e;
+      --green-100: #e8f5ee;
+      --green-50:  #f2faf5;
+      --blue-800: #1e40af;
+      --blue-100: #dbeafe;
+      --blue-50:  #eff6ff;
+      --gold:     #c9932a;
+      --gold-light: #fef3c7;
+      --neutral-900: #111827;
+      --neutral-700: #374151;
+      --neutral-500: #6b7280;
+      --neutral-300: #d1d5db;
+      --neutral-100: #f3f4f6;
+      --red: #dc2626;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: var(--neutral-900);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* ── COVER ── */
+    .cover {
+      background: linear-gradient(160deg, var(--green-900) 0%, var(--green-700) 60%, #1e8b4e 100%);
+      color: #fff;
+      padding: 60px 40px 50px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .cover-logos {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+    .cover-logos img { height: 60px; }
+    .cover-logos .div { width: 1px; height: 48px; background: rgba(255,255,255,.3); }
+    .cover h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 4px rgba(0,0,0,.2);
+    }
+    .cover .subtitle { font-size: 15px; opacity: .85; margin-bottom: 6px; }
+    .cover .org { font-size: 13px; opacity: .7; margin-bottom: 28px; }
+    .cover-badges {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .cover-badge {
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+      padding: 6px 16px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .cover-meta {
+      margin-top: 28px;
+      font-size: 12px;
+      opacity: .6;
+    }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+
+    /* ── TOC ── */
+    .toc {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 32px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+      border-left: 4px solid var(--green-600);
+    }
+    .toc h3 { font-size: 14px; font-weight: 700; color: var(--green-800); margin-bottom: 14px; text-transform: uppercase; letter-spacing: .5px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: var(--green-700); text-decoration: none; font-size: 13px; font-weight: 500; }
+    .toc a:hover { text-decoration: underline; }
+    .toc .sub { padding-left: 16px; margin-top: 4px; }
+    .toc .sub li { margin-bottom: 3px; }
+    .toc .sub a { font-weight: 400; color: var(--neutral-700); font-size: 12px; }
+
+    /* ── SECTIONS ── */
+    .section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--neutral-100);
+    }
+    .section-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .icon-green  { background: var(--green-100); }
+    .icon-blue   { background: var(--blue-100); }
+    .icon-gold   { background: var(--gold-light); }
+    .icon-red    { background: #fee2e2; }
+    .icon-purple { background: #ede9fe; }
+
+    .section-header h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 18px;
+      color: var(--neutral-900);
+    }
+    .section-header .sec-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--neutral-500);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      display: block;
+    }
+
+    h3 { font-size: 15px; font-weight: 700; color: var(--green-800); margin: 20px 0 10px; }
+    h4 { font-size: 13px; font-weight: 700; color: var(--neutral-700); margin: 14px 0 8px; text-transform: uppercase; letter-spacing: .3px; }
+    p  { margin-bottom: 10px; color: var(--neutral-700); }
+    ul, ol { padding-left: 20px; margin-bottom: 12px; }
+    li { margin-bottom: 6px; color: var(--neutral-700); }
+    strong { color: var(--neutral-900); }
+
+    /* ── STEP BOXES ── */
+    .steps { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+    .step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 16px;
+      background: var(--neutral-100);
+      border-radius: 8px;
+    }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--green-700);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-num.blue { background: var(--blue-800); }
+    .step-num.gold { background: var(--gold); }
+    .step-content { flex: 1; }
+    .step-content strong { display: block; font-size: 14px; margin-bottom: 3px; }
+    .step-content span { font-size: 13px; color: var(--neutral-600); }
+
+    /* ── INFO BOXES ── */
+    .info-box {
+      padding: 14px 16px;
+      border-radius: 8px;
+      margin: 12px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 13px;
+    }
+    .info-box .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .info-tip    { background: var(--green-50);   border: 1px solid #a7f3d0; color: var(--green-800); }
+    .info-note   { background: var(--blue-50);    border: 1px solid #bfdbfe; color: var(--blue-800); }
+    .info-warn   { background: var(--gold-light); border: 1px solid #fcd34d; color: #92400e; }
+    .info-danger { background: #fee2e2;            border: 1px solid #fecaca; color: var(--red); }
+
+    /* ── TABLE ── */
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+    th { background: var(--neutral-900); color: #fff; padding: 9px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .4px; }
+    td { padding: 9px 12px; border-bottom: 1px solid var(--neutral-100); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: var(--neutral-50); }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-green  { background: var(--green-100); color: var(--green-800); }
+    .badge-blue   { background: var(--blue-100);  color: var(--blue-800); }
+    .badge-orange { background: #fef3c7; color: #92400e; }
+    .badge-red    { background: #fee2e2; color: var(--red); }
+
+    /* ── URL BOX ── */
+    .url-box {
+      background: var(--neutral-900);
+      color: #a5f3c8;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 13px;
+      margin: 10px 0;
+      word-break: break-all;
+    }
+    .url-box a { color: #6ee7b7; }
+
+    /* ── FLOW ── */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+      padding: 14px 16px;
+      background: var(--neutral-100);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .flow-item {
+      background: #fff;
+      border: 1px solid var(--neutral-300);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .flow-arr { color: var(--neutral-500); font-size: 16px; }
+
+    /* ── ROLE CARDS ── */
+    .role-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 16px 0; }
+    .role-card {
+      padding: 16px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .role-card .icon { font-size: 32px; margin-bottom: 8px; display: block; }
+    .role-card h4 { font-size: 14px; margin: 0 0 6px; text-transform: none; letter-spacing: 0; }
+    .role-card p  { font-size: 12px; margin: 0; }
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: #fff; font-size: 12px; }
+      .cover { padding: 40px 30px; }
+      .section { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+      .no-print { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      .cover h1 { font-size: 22px; }
+      .role-grid { grid-template-columns: 1fr; }
+      .section { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ COVER ══════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-logos">
+    <img src="https://i.ibb.co/QvRWvqmk/1-Jata-KPKM.png" alt="KPKM"/>
+    <div class="div"></div>
+    <img src="https://i.ibb.co/XfcvhqxC/2-Logo-DVS.png" alt="DVS"/>
+  </div>
+  <h1>📋 Manual Pengguna</h1>
+  <p class="subtitle">Portal Direktori Pengusaha Ternakan DVS Malaysia</p>
+  <p class="org">Jabatan Perkhidmatan Veterinar Malaysia | Kementerian Pertanian & Keterjaminan Makanan</p>
+  <div class="cover-badges">
+    <span class="cover-badge">🐄 Pengusaha Ternakan</span>
+    <span class="cover-badge">🎓 Pelajar & Graduan</span>
+    <span class="cover-badge">⚙️ Pentadbir Sistem</span>
+  </div>
+  <p class="cover-meta">Versi 2.0 — Dikemaskini Jun 2026 | Inisiatif Institut Teknologi Unggas 2026</p>
+</div>
+
+<div class="container">
+
+  <!-- ══ PRINT BUTTON ══ -->
+  <div class="no-print" style="text-align:right;margin-bottom:20px">
+    <button onclick="window.print()" style="background:var(--green-700);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🖨️ Cetak / Simpan PDF</button>
+    <a href="index.html" style="margin-left:10px;background:#fff;color:var(--neutral-700);border:1px solid var(--neutral-300);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none">← Kembali ke Portal</a>
+  </div>
+
+  <!-- ══ TOC ══ -->
+  <div class="toc">
+    <h3>📑 Kandungan Manual</h3>
+    <ol>
+      <li><a href="#sec1">Pengenalan Sistem</a></li>
+      <li><a href="#sec2">Cara Guna — Tatapan Direktori</a></li>
+      <li><a href="#sec3">Cara Daftar Sebagai Pengusaha</a></li>
+      <li><a href="#sec4">Direktori Pelajar & Graduan</a>
+        <ol class="sub">
+          <li><a href="#sec4a">Melihat Senarai Pelajar</a></li>
+          <li><a href="#sec4b">Daftar Sebagai Pelajar / Graduan</a></li>
+        </ol>
+      </li>
+      <li><a href="#sec5">Panel Pentadbir (Admin)</a>
+        <ol class="sub">
+          <li><a href="#sec5a">Cara Akses Panel Admin</a></li>
+          <li><a href="#sec5b">Meluluskan / Menolak Rekod</a></li>
+          <li><a href="#sec5c">Export Data Excel & PDF</a></li>
+        </ol>
+      </li>
+      <li><a href="#sec6">Penyelenggaraan Sistem (Teknikal)</a></li>
+      <li><a href="#sec7">Soalan Lazim (FAQ)</a></li>
+    </ol>
+  </div>
+
+  <!-- ══ SECTION 1: PENGENALAN ══ -->
+  <div class="section" id="sec1">
+    <div class="section-header">
+      <div class="section-icon icon-green">📋</div>
+      <div>
+        <span class="sec-num">Bahagian 1</span>
+        <h2>Pengenalan Sistem</h2>
+      </div>
+    </div>
+
+    <p>Portal Direktori Pengusaha Ternakan DVS Malaysia adalah platform dalam talian yang membolehkan pengusaha ternakan seluruh Malaysia mendaftarkan dan memaparkan maklumat perniagaan mereka kepada umum.</p>
+
+    <h3>Tujuan Portal</h3>
+    <div class="role-grid">
+      <div class="role-card" style="background:var(--green-50);border:1px solid #a7f3d0">
+        <span class="icon">🤝</span>
+        <h4 style="color:var(--green-800)">Networking Penternak</h4>
+        <p style="color:var(--green-700)">Hubungkan pengusaha ternakan seluruh Malaysia untuk kerjasama perniagaan</p>
+      </div>
+      <div class="role-card" style="background:var(--blue-50);border:1px solid #bfdbfe">
+        <span class="icon">🎓</span>
+        <h4 style="color:var(--blue-800)">Latihan Industri</h4>
+        <p style="color:#1e40af">Platform untuk pelajar mencari tempat Latihan Industri di ladang seluruh Malaysia</p>
+      </div>
+      <div class="role-card" style="background:var(--gold-light);border:1px solid #fcd34d">
+        <span class="icon">💼</span>
+        <h4 style="color:#92400e">Peluang Pekerjaan</h4>
+        <p style="color:#92400e">Memudahkan graduan mencari peluang kerja dalam industri ternakan</p>
+      </div>
+    </div>
+
+    <h3>URL Portal</h3>
+    <table>
+      <tr><th>Halaman</th><th>URL</th><th>Untuk Siapa</th></tr>
+      <tr><td><strong>Portal Utama</strong></td><td><a href="https://itumelaka.github.io/listpengusaha/" target="_blank">itumelaka.github.io/listpengusaha/</a></td><td>Semua pengguna</td></tr>
+      <tr><td><strong>Pelajar & Graduan</strong></td><td><a href="https://itumelaka.github.io/listpengusaha/students.html" target="_blank">…/students.html</a></td><td>Pelajar & penternak</td></tr>
+      <tr><td><strong>Manual ini</strong></td><td><a href="https://itumelaka.github.io/listpengusaha/manual.html" target="_blank">…/manual.html</a></td><td>Semua pengguna</td></tr>
+    </table>
+
+    <h3>Jenis Pengguna</h3>
+    <table>
+      <tr><th>Pengguna</th><th>Akses</th><th>Fungsi Utama</th></tr>
+      <tr><td>🌍 <strong>Awam</strong></td><td>Bebas — tanpa log masuk</td><td>Lihat direktori, cari pengusaha</td></tr>
+      <tr><td>🐄 <strong>Pengusaha</strong></td><td>Bebas — tanpa log masuk</td><td>Daftar masuk direktori</td></tr>
+      <tr><td>🎓 <strong>Pelajar</strong></td><td>Bebas — tanpa log masuk</td><td>Daftar profil LI / kerja</td></tr>
+      <tr><td>⚙️ <strong>Admin</strong></td><td>OTP e-mel</td><td>Lulus/tolak rekod, export data</td></tr>
+    </table>
+  </div>
+
+  <!-- ══ SECTION 2: DIREKTORI ══ -->
+  <div class="section" id="sec2">
+    <div class="section-header">
+      <div class="section-icon icon-green">🐄</div>
+      <div>
+        <span class="sec-num">Bahagian 2</span>
+        <h2>Cara Guna — Tatapan Direktori</h2>
+      </div>
+    </div>
+
+    <p>Halaman utama portal memaparkan senarai semua pengusaha ternakan yang telah diluluskan. Tidak perlu log masuk untuk melihat direktori.</p>
+
+    <h3>Melihat Direktori</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>Buka Portal</strong>
+          <span>Pergi ke <code>https://itumelaka.github.io/listpengusaha/</code> — direktori akan dimuatkan secara automatik</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Lihat Statistik</strong>
+          <span>Bahagian atas menunjukkan jumlah pengusaha, bilangan mengikut jenis ternakan, dan jumlah negeri yang terlibat</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Guna Carian & Penapis</strong>
+          <span>Taip nama, lokasi atau jenis dalam kotak carian. Gunakan dropdown untuk tapis mengikut <strong>Negeri</strong> atau <strong>Jenis Perusahaan</strong></span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>Hubungi Pengusaha</strong>
+          <span>Klik butang <span class="badge badge-green">💬 WhatsApp</span> untuk hubungi terus, atau <span class="badge badge-blue">📘 Facebook</span> untuk lawati halaman mereka</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box info-tip">
+      <span class="icon">💡</span>
+      <div>Klik butang <strong>🔄 Muat Semula</strong> untuk dapatkan data terkini dari pangkalan data jika anda rasa senarai tidak lengkap.</div>
+    </div>
+
+    <h3>Maklumat Dalam Direktori</h3>
+    <table>
+      <tr><th>Maklumat</th><th>Keterangan</th></tr>
+      <tr><td>Nama / Syarikat / Ladang</td><td>Nama pengusaha atau nama perniagaan</td></tr>
+      <tr><td>Jenis Perusahaan</td><td>Contoh: Ternakan Ayam, Ternakan Kambing, Akuakultur dll</td></tr>
+      <tr><td>Negeri</td><td>Negeri lokasi ladang</td></tr>
+      <tr><td>Lokasi Ladang</td><td>Alamat atau kawasan ladang</td></tr>
+      <tr><td>WhatsApp</td><td>Butang pautan terus ke WhatsApp pengusaha</td></tr>
+      <tr><td>Facebook</td><td>Pautan ke halaman Facebook (jika ada)</td></tr>
+    </table>
+
+    <div class="info-box info-note">
+      <span class="icon">ℹ️</span>
+      <div>Hanya rekod yang telah <strong>diluluskan oleh admin</strong> dan pengusaha yang <strong>bersetuju</strong> untuk dikongsikan akan dipaparkan dalam direktori.</div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 3: DAFTAR PENGUSAHA ══ -->
+  <div class="section" id="sec3">
+    <div class="section-header">
+      <div class="section-icon icon-gold">✏️</div>
+      <div>
+        <span class="sec-num">Bahagian 3</span>
+        <h2>Cara Daftar Sebagai Pengusaha</h2>
+      </div>
+    </div>
+
+    <p>Pengusaha ternakan boleh mendaftarkan maklumat perniagaan mereka untuk dipaparkan dalam direktori. Proses ini percuma dan mudah.</p>
+
+    <h3>Langkah Pendaftaran</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num gold">1</div>
+        <div class="step-content">
+          <strong>Klik Butang "✏️ Daftar"</strong>
+          <span>Klik butang Daftar dalam bar navigasi atas portal utama</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num gold">2</div>
+        <div class="step-content">
+          <strong>Isi Borang Pendaftaran</strong>
+          <span>Lengkapkan semua maklumat yang bertanda * (wajib diisi)</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num gold">3</div>
+        <div class="step-content">
+          <strong>Tandakan Persetujuan</strong>
+          <span>Tandakan kotak persetujuan untuk membenarkan maklumat anda dikongsikan kepada awam</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num gold">4</div>
+        <div class="step-content">
+          <strong>Hantar & Tunggu E-mel</strong>
+          <span>Klik "Hantar" — e-mel pengesahan akan dihantar ke alamat e-mel anda</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num gold">5</div>
+        <div class="step-content">
+          <strong>Tunggu Kelulusan Admin</strong>
+          <span>Admin akan menyemak dan meluluskan pendaftaran anda dalam masa 1-2 hari bekerja. Selepas diluluskan, maklumat anda akan muncul dalam direktori.</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Maklumat Yang Diperlukan</h3>
+    <table>
+      <tr><th>Medan</th><th>Contoh</th><th>Wajib?</th></tr>
+      <tr><td>Nama / Syarikat / Ladang</td><td>Ladang Ternakan Maju Sdn Bhd</td><td><span class="badge badge-red">Wajib</span></td></tr>
+      <tr><td>No. WhatsApp</td><td>+60123456789</td><td><span class="badge badge-red">Wajib</span></td></tr>
+      <tr><td>Negeri</td><td>Selangor</td><td><span class="badge badge-red">Wajib</span></td></tr>
+      <tr><td>Lokasi Ladang</td><td>Kg. Bukit Jawa, Daerah Batu Pahat</td><td><span class="badge badge-red">Wajib</span></td></tr>
+      <tr><td>Jenis Perusahaan</td><td>Ternakan Ayam / Ternakan Kambing</td><td><span class="badge badge-red">Wajib</span></td></tr>
+      <tr><td>Alamat E-mel</td><td>nama@email.com</td><td><span class="badge badge-red">Wajib</span></td></tr>
+      <tr><td>Facebook URL</td><td>https://facebook.com/namaladang</td><td><span class="badge badge-green">Pilihan</span></td></tr>
+    </table>
+
+    <div class="info-box info-warn">
+      <span class="icon">⚠️</span>
+      <div><strong>Sistem akan menolak pendaftaran berganda</strong> — jika anda mendaftar semula dengan e-mel atau nombor yang sama dalam masa 24 jam, sistem akan memaklumkan anda untuk hubungi admin.</div>
+    </div>
+
+    <div class="info-box info-tip">
+      <span class="icon">🔒</span>
+      <div>Maklumat anda dilindungi di bawah <strong>Akta Perlindungan Data Peribadi 2010</strong>. Nombor telefon anda hanya dikongsi jika anda memberi persetujuan.</div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 4: PELAJAR ══ -->
+  <div class="section" id="sec4">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🎓</div>
+      <div>
+        <span class="sec-num">Bahagian 4</span>
+        <h2>Direktori Pelajar & Graduan</h2>
+      </div>
+    </div>
+
+    <p>Halaman khas untuk pelajar dan graduan bidang ternakan mendaftarkan diri bagi tujuan <strong>Latihan Industri (LI)</strong> dan <strong>peluang pekerjaan</strong>. Penternak boleh terus menghubungi pelajar yang berminat.</p>
+
+    <div class="url-box">🌐 <a href="https://itumelaka.github.io/listpengusaha/students.html">https://itumelaka.github.io/listpengusaha/students.html</a></div>
+
+    <h3 id="sec4a">4.1 Melihat Senarai Pelajar</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num blue">1</div>
+        <div class="step-content">
+          <strong>Buka Halaman Pelajar</strong>
+          <span>Klik butang <strong>"🎓 Pelajar & Graduan"</strong> dalam nav bar, atau buka URL di atas terus</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num blue">2</div>
+        <div class="step-content">
+          <strong>Guna Penapis</strong>
+          <span>Tapis mengikut <strong>Negeri</strong>, <strong>Tujuan</strong> (LI / Kerja Tetap / Sambilan), atau <strong>Tahap</strong> (Diploma / Degree / Master)</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num blue">3</div>
+        <div class="step-content">
+          <strong>Hubungi Pelajar</strong>
+          <span>Setiap kad pelajar memaparkan <strong>nombor WhatsApp</strong> dan <strong>e-mel</strong> secara terus. Klik <span class="badge badge-green">💬 WhatsApp</span> atau <span class="badge badge-blue">📧 Hantar E-mel</span></span>
+        </div>
+      </div>
+    </div>
+
+    <h3 id="sec4b">4.2 Daftar Sebagai Pelajar / Graduan</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num blue">1</div>
+        <div class="step-content">
+          <strong>Klik Tab "✏️ Daftar / Kemaskini Profil"</strong>
+          <span>Tab ini ada dalam halaman Pelajar & Graduan</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num blue">2</div>
+        <div class="step-content">
+          <strong>Isi Maklumat Profil</strong>
+          <span>Nama, No. WhatsApp, E-mel, Negeri, Universiti/Kolej, Tahap Pengajian, Bidang, dan Tujuan (LI / Kerja Tetap)</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num blue">3</div>
+        <div class="step-content">
+          <strong>Isi Tempoh Tersedia</strong>
+          <span>Contoh: "Jun – Ogos 2026" atau "Segera" — ini membantu penternak tahu bila anda boleh mula</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num blue">4</div>
+        <div class="step-content">
+          <strong>Hantar & Profil Terus Aktif</strong>
+          <span>Pendaftaran pelajar diluluskan secara automatik — profil anda akan muncul dalam direktori dengan serta-merta</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box info-note">
+      <span class="icon">ℹ️</span>
+      <div>Pelajar boleh mendaftarkan ringkasan diri dalam medan <strong>Bio</strong> untuk memberitahu penternak tentang pengalaman, kemahiran atau minat khusus dalam bidang ternakan.</div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 5: ADMIN ══ -->
+  <div class="section" id="sec5">
+    <div class="section-header">
+      <div class="section-icon icon-red">⚙️</div>
+      <div>
+        <span class="sec-num">Bahagian 5</span>
+        <h2>Panel Pentadbir (Admin)</h2>
+      </div>
+    </div>
+
+    <p>Panel admin membolehkan pentadbir sistem menyemak, meluluskan atau menolak pendaftaran pengusaha baru, serta mengeksport data direktori.</p>
+
+    <h3 id="sec5a">5.1 Cara Akses Panel Admin</h3>
+
+    <div class="info-box info-warn">
+      <span class="icon">🔐</span>
+      <div>Akses panel admin adalah <strong>tersembunyi</strong> — tiada butang log masuk yang kelihatan untuk mencegah akses tidak sah.</div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>Klik Footer 5 Kali</strong>
+          <span>Di bahagian bawah halaman utama, klik perkataan <strong>"Copyright © 2026"</strong> sebanyak <strong>5 kali berturut-turut</strong> dalam masa 3 saat</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Popup Login Muncul</strong>
+          <span>Tetingkap "Akses Pentadbir" akan muncul. Masukkan e-mel admin: <strong>itumelaka@gmail.com</strong></span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Terima Kod OTP</strong>
+          <span>Klik "Hantar OTP" — kod 6 digit akan dihantar ke e-mel admin dalam masa beberapa saat</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>Masukkan OTP & Log Masuk</strong>
+          <span>Taip 6 digit OTP dan klik "Log Masuk". Kod OTP sah selama <strong>10 minit</strong> sahaja</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <strong>Panel Admin Terbuka</strong>
+          <span>Butang <strong>⚙️ Admin</strong> dan <strong>🚪 Keluar</strong> akan muncul dalam nav bar. Klik Admin untuk masuk ke panel</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 id="sec5b">5.2 Meluluskan / Menolak Rekod</h3>
+
+    <p>Panel admin mempunyai 4 tab untuk menyaring rekod:</p>
+    <table>
+      <tr><th>Tab</th><th>Kandungan</th></tr>
+      <tr><td><span class="badge badge-orange">🕐 Pending</span></td><td>Pendaftaran baru yang belum disemak</td></tr>
+      <tr><td><span class="badge badge-green">✅ Diluluskan</span></td><td>Rekod yang telah diluluskan — akan papar dalam direktori</td></tr>
+      <tr><td><span class="badge badge-red">❌ Ditolak</span></td><td>Rekod yang telah ditolak — tidak akan dipaparkan</td></tr>
+      <tr><td>📋 Semua</td><td>Semua rekod tanpa tapis</td></tr>
+    </table>
+
+    <h4>Tindakan Yang Tersedia</h4>
+    <div class="flow">
+      <span class="flow-item">Pilih tab Pending</span>
+      <span class="flow-arr">→</span>
+      <span class="flow-item">Semak maklumat</span>
+      <span class="flow-arr">→</span>
+      <span class="flow-item">Klik ✅ Lulus</span>
+      <span class="flow-arr">atau</span>
+      <span class="flow-item">Klik ❌ Tolak</span>
+      <span class="flow-arr">→</span>
+      <span class="flow-item">Status dikemas kini</span>
+    </div>
+
+    <div class="info-box info-tip">
+      <span class="icon">⚡</span>
+      <div>Gunakan butang <strong>"✅ Lulus Semua Pending"</strong> untuk meluluskan semua rekod pending sekaligus dengan satu klik.</div>
+    </div>
+
+    <h3 id="sec5c">5.3 Export Data Excel & PDF</h3>
+    <table>
+      <tr><th>Butang</th><th>Format</th><th>Cara Guna</th></tr>
+      <tr>
+        <td>📊 Export Excel</td>
+        <td>CSV (boleh buka dalam Excel)</td>
+        <td>Klik butang — fail <code>.csv</code> akan dimuat turun automatik. Buka dengan Microsoft Excel atau Google Sheets</td>
+      </tr>
+      <tr>
+        <td>📄 Export PDF</td>
+        <td>HTML untuk cetak</td>
+        <td>Klik butang — halaman cetak akan dibuka dalam tab baru. Tekan <strong>Ctrl+P</strong> (Windows) atau <strong>Cmd+P</strong> (Mac) → pilih "Save as PDF"</td>
+      </tr>
+    </table>
+
+    <div class="info-box info-note">
+      <span class="icon">ℹ️</span>
+      <div>Export Excel mengandungi semua rekod (semua status). Export PDF hanya mengandungi rekod yang telah <strong>diluluskan</strong> sahaja.</div>
+    </div>
+
+    <h3>Log Keluar Admin</h3>
+    <p>Klik butang <strong>🚪 Keluar</strong> dalam nav bar untuk log keluar. Sesi admin akan tamat dan butang Admin akan hilang semula.</p>
+  </div>
+
+  <!-- ══ SECTION 6: TEKNIKAL ══ -->
+  <div class="section" id="sec6">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🔧</div>
+      <div>
+        <span class="sec-num">Bahagian 6</span>
+        <h2>Penyelenggaraan Sistem (Teknikal)</h2>
+      </div>
+    </div>
+
+    <p>Bahagian ini untuk pentadbir teknikal yang perlu menyelenggara atau mengemas kini sistem.</p>
+
+    <h3>Komponen Sistem</h3>
+    <table>
+      <tr><th>Komponen</th><th>Platform</th><th>Fungsi</th></tr>
+      <tr><td>Frontend</td><td>GitHub Pages</td><td>Antara muka pengguna (HTML/CSS/JS)</td></tr>
+      <tr><td>Backend API</td><td>Google Apps Script</td><td>Pemprosesan data, OTP, e-mel</td></tr>
+      <tr><td>Pangkalan Data</td><td>Google Sheets</td><td>Simpan data pengusaha & pelajar</td></tr>
+    </table>
+
+    <h3>Kemaskini Kod GAS (Backend)</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>Dapatkan Kod Terkini</strong>
+          <span>Buka <code>https://raw.githubusercontent.com/itumelaka/listpengusaha/main/Code.gs</code> → Ctrl+A → Ctrl+C</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Tampal Dalam GAS Editor</strong>
+          <span>Buka <code>script.google.com</code> → pilih projek → Ctrl+A → Ctrl+V → Ctrl+S</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Deploy Versi Baru</strong>
+          <span>Deploy → Manage deployments → ✏️ pensel → Version: New version → Deploy</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box info-tip">
+      <span class="icon">✅</span>
+      <div>Gunakan <strong>Manage deployments</strong> (bukan New deployment) supaya URL GAS kekal sama dan tidak perlu kemaskini <code>index.html</code>.</div>
+    </div>
+
+    <h3>Fungsi Utiliti GAS</h3>
+    <table>
+      <tr><th>Fungsi</th><th>Bila Digunakan</th></tr>
+      <tr><td><code>setupSheets()</code></td><td>Pertama kali setup — mencipta sheet DataBersih & AuditLog</td></tr>
+      <tr><td><code>migrateApproveOldRecords()</code></td><td>Meluluskan semua rekod lama yang tiada status secara pukal</td></tr>
+      <tr><td><code>testEndpoint()</code></td><td>Menguji API getDirectory — semak log untuk output</td></tr>
+      <tr><td><code>testEmail()</code></td><td>Menguji penghantaran e-mel — gunakan selepas update kod</td></tr>
+    </table>
+
+    <h3>Sheet Google Sheets</h3>
+    <table>
+      <tr><th>Sheet</th><th>Fungsi</th></tr>
+      <tr><td><strong>Form Responses 1</strong></td><td>Data utama semua pengusaha yang mendaftar</td></tr>
+      <tr><td><strong>Pelajar</strong></td><td>Data pelajar & graduan yang mendaftar</td></tr>
+      <tr><td><strong>DataBersih</strong></td><td>Sheet rujukan (auto-cipta)</td></tr>
+      <tr><td><strong>AuditLog</strong></td><td>Log semua tindakan admin (approve/reject)</td></tr>
+    </table>
+  </div>
+
+  <!-- ══ SECTION 7: FAQ ══ -->
+  <div class="section" id="sec7">
+    <div class="section-header">
+      <div class="section-icon icon-blue">❓</div>
+      <div>
+        <span class="sec-num">Bahagian 7</span>
+        <h2>Soalan Lazim (FAQ)</h2>
+      </div>
+    </div>
+
+    <h3>Untuk Pengusaha</h3>
+
+    <h4>Berapa lama masa untuk pendaftaran saya diluluskan?</h4>
+    <p>Biasanya dalam masa <strong>1-2 hari bekerja</strong>. Anda akan menerima e-mel pengesahan selepas pendaftaran dihantar, dan maklumat anda akan muncul dalam direktori selepas diluluskan oleh admin.</p>
+
+    <h4>Boleh saya kemaskini maklumat saya?</h4>
+    <p>Buat masa ini, kemaskini dilakukan secara manual. Sila hubungi admin di <strong>itumelaka@gmail.com</strong> untuk meminta kemaskini maklumat.</p>
+
+    <h4>Mengapa Facebook saya tidak boleh diisi?</h4>
+    <p>Medan Facebook adalah <strong>pilihan (optional)</strong>. Jika tiada, kosongkan sahaja. Jika anda menaip "TIADA" atau "tiada", sistem akan mengosongkan medan itu secara automatik.</p>
+
+    <h4>Pendaftaran saya ditolak, apa yang patut saya buat?</h4>
+    <p>Hubungi admin di <strong>itumelaka@gmail.com</strong> untuk mendapatkan penjelasan dan mendaftar semula jika perlu.</p>
+
+    <h3>Untuk Pelajar</h3>
+
+    <h4>Adakah profil saya terus kelihatan selepas mendaftar?</h4>
+    <p>Ya! Pendaftaran pelajar diluluskan secara <strong>automatik</strong> — profil anda akan muncul dalam direktori dengan serta-merta selepas borang dihantar.</p>
+
+    <h4>Bagaimana penternak boleh hubungi saya?</h4>
+    <p>Nombor WhatsApp dan alamat e-mel anda dipaparkan terus dalam kad profil anda. Penternak boleh menghubungi anda terus tanpa perlu log masuk.</p>
+
+    <h3>Untuk Admin</h3>
+
+    <h4>OTP tidak diterima, apa yang perlu dilakukan?</h4>
+    <p>Semak folder <strong>Spam / Junk</strong> dalam e-mel anda. Jika masih tiada, pastikan GAS telah dibenarkan menghantar e-mel — jalankan fungsi <code>testEmail()</code> dalam GAS Editor untuk menguji.</p>
+
+    <h4>Direktori tidak menunjukkan data terkini selepas meluluskan rekod</h4>
+    <p>Klik butang <strong>"🔄 Muat Semula"</strong> dalam bar penapis direktori untuk mendapatkan data terkini dari Google Sheets.</p>
+
+    <h4>Bagaimana nak tambah admin baru?</h4>
+    <p>Dalam fail <code>Code.gs</code>, kemaskini nilai <code>ADMIN_EMAIL</code> dalam blok <code>CONFIG</code>, kemudian deploy versi baru GAS.</p>
+  </div>
+
+  <!-- ══ FOOTER ══ -->
+  <div style="text-align:center;padding:24px;color:var(--neutral-500);font-size:12px;margin-top:8px">
+    <strong style="color:var(--neutral-700)">© 2026 Portal Direktori Pengusaha Ternakan DVS Malaysia</strong><br/>
+    Inisiatif Institut Teknologi Unggas 2026 | Jabatan Perkhidmatan Veterinar Malaysia<br/>
+    Untuk pertanyaan teknikal: <a href="mailto:itumelaka@gmail.com" style="color:var(--green-700)">itumelaka@gmail.com</a>
+  </div>
+
+</div>
+</body>
+</html>
