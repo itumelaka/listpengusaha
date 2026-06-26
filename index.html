@@ -117,6 +117,7 @@
     .nav-btn:hover { background: rgba(255,255,255,.22); }
     .nav-btn.active { background: rgba(255,255,255,.25); border-color: rgba(255,255,255,.4); }
     #btn-logout { display: none; background: rgba(220,38,38,.25); border-color: rgba(220,38,38,.4); }
+    #admin-modal.open { display: flex !important; }
 
     /* ─── VIEWS ─────────────────────────────────────────────── */
     .view { display: none; }
@@ -808,9 +809,49 @@
 
 <!-- ─── FOOTER ────────────────────────────────────────────── -->
 <footer>
-  <strong>Copyright © 2026 — Portal Direktori Pengusaha Ternakan DVS Malaysia</strong><br/>
+  <span id="secret-trigger" onclick="secretClick()" style="cursor:default;user-select:none">
+    <strong>Copyright © 2026 — Portal Direktori Pengusaha Ternakan DVS Malaysia</strong>
+  </span><br/>
   Inisiatif Institut Teknologi Unggas 2026 | Jabatan Perkhidmatan Veterinar Malaysia | Kementerian Pertanian &amp; Keterjaminan Makanan
 </footer>
+
+<!-- ── MODAL LOGIN ADMIN ── -->
+<div id="admin-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:36px;width:100%;max-width:400px;margin:16px;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:36px;margin-bottom:8px">🔐</div>
+      <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;color:var(--green-800);margin-bottom:4px">Akses Pentadbir</h3>
+      <p style="font-size:13px;color:var(--neutral-500)">Masukkan e-mel admin untuk menerima OTP</p>
+    </div>
+
+    <!-- Step 1: Email -->
+    <div id="modal-step1">
+      <div class="form-group">
+        <label for="modal-email">Alamat E-mel Admin</label>
+        <input type="email" id="modal-email" placeholder="admin@email.com" onkeydown="if(event.key==='Enter')modalRequestOtp()" />
+      </div>
+      <button class="btn btn-primary" onclick="modalRequestOtp()" id="modal-otp-btn">📨 Hantar OTP</button>
+    </div>
+
+    <!-- Step 2: OTP -->
+    <div id="modal-step2" style="display:none">
+      <div id="modal-otp-sent" class="alert alert-info" style="margin-bottom:16px;font-size:13px"></div>
+      <div class="form-group">
+        <label for="modal-otp">Kod OTP (6 digit)</label>
+        <input type="text" id="modal-otp" class="otp-input" placeholder="000000" maxlength="6" inputmode="numeric" onkeydown="if(event.key==='Enter')modalVerifyOtp()" />
+      </div>
+      <button class="btn btn-primary" onclick="modalVerifyOtp()" id="modal-verify-btn">✅ Log Masuk</button>
+      <div style="text-align:center;margin-top:10px">
+        <button class="link-btn" onclick="modalReset()">← Tukar E-mel</button>
+      </div>
+    </div>
+
+    <div id="modal-msg"></div>
+    <div style="text-align:center;margin-top:16px">
+      <button class="link-btn" onclick="closeAdminModal()">Batal</button>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ════════════════════════════════════════════════════════════
@@ -1058,6 +1099,76 @@ function logout() {
   updateHeaderAuth();
   showView('directory');
   showToast('Anda telah log keluar.', 'success');
+}
+
+/* SECRET ADMIN — klik copyright 5x */
+let secretClickCount = 0, secretClickTimer = null;
+
+function secretClick() {
+  secretClickCount++;
+  clearTimeout(secretClickTimer);
+  secretClickTimer = setTimeout(() => { secretClickCount = 0; }, 3000);
+  if (secretClickCount >= 5) { secretClickCount = 0; openAdminModal(); }
+}
+
+function openAdminModal() {
+  document.getElementById('admin-modal').classList.add('open');
+  setTimeout(() => document.getElementById('modal-email').focus(), 100);
+}
+
+function closeAdminModal() {
+  document.getElementById('admin-modal').classList.remove('open');
+  modalReset();
+}
+
+function modalReset() {
+  document.getElementById('modal-step1').style.display = 'block';
+  document.getElementById('modal-step2').style.display = 'none';
+  document.getElementById('modal-otp').value = '';
+  document.getElementById('modal-msg').innerHTML = '';
+  const btn = document.getElementById('modal-otp-btn');
+  if (btn) { btn.disabled = false; btn.textContent = '📨 Hantar OTP'; }
+}
+
+async function modalRequestOtp() {
+  const email = document.getElementById('modal-email').value.trim();
+  if (!email || !email.includes('@')) { setModalMsg('error', 'Sila masukkan e-mel yang sah.'); return; }
+  const btn = document.getElementById('modal-otp-btn');
+  btn.disabled = true; btn.textContent = '⏳ Menghantar...';
+  try {
+    const res = await gasPost({ action: 'requestOtp', email });
+    if (res.error) { setModalMsg('error', res.error); btn.disabled = false; btn.textContent = '📨 Hantar OTP'; return; }
+    document.getElementById('modal-step1').style.display = 'none';
+    document.getElementById('modal-step2').style.display = 'block';
+    document.getElementById('modal-otp-sent').textContent = '📬 ' + res.message;
+    setTimeout(() => document.getElementById('modal-otp').focus(), 100);
+  } catch (e) { setModalMsg('error', 'Gagal menghubungi server.'); btn.disabled = false; btn.textContent = '📨 Hantar OTP'; }
+}
+
+async function modalVerifyOtp() {
+  const email = document.getElementById('modal-email').value.trim();
+  const otp   = document.getElementById('modal-otp').value.trim();
+  if (!otp || otp.length !== 6) { setModalMsg('error', 'Masukkan 6 digit OTP.'); return; }
+  const btn = document.getElementById('modal-verify-btn');
+  btn.disabled = true; btn.textContent = '⏳ Mengesah...';
+  try {
+    const res = await gasPost({ action: 'verifyOtp', email, otp });
+    if (res.error) { setModalMsg('error', res.error); btn.disabled = false; btn.textContent = '✅ Log Masuk'; return; }
+    if (!res.isAdmin) { setModalMsg('error', 'E-mel ini bukan akaun admin.'); btn.disabled = false; btn.textContent = '✅ Log Masuk'; return; }
+    session = { email: res.email, isAdmin: true, token: res.token };
+    sessionStorage.setItem('dvs_session', JSON.stringify(session));
+    updateHeaderAuth();
+    closeAdminModal();
+    showToast('Log masuk admin berjaya! ✅', 'success');
+    document.getElementById('admin-user-label').textContent = '👤 ' + res.email;
+    showView('admin');
+  } catch (e) { setModalMsg('error', 'Gagal menghubungi server.'); btn.disabled = false; btn.textContent = '✅ Log Masuk'; }
+}
+
+function setModalMsg(type, msg) {
+  const el = document.getElementById('modal-msg');
+  if (!msg) { el.innerHTML = ''; return; }
+  el.innerHTML = '<div class="alert ' + (type==='error'?'alert-error':'alert-info') + '" style="margin-top:12px;font-size:13px">' + msg + '</div>';
 }
 
 function setLoginMsg(type, msg) {
