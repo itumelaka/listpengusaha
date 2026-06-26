@@ -347,12 +347,18 @@
     /* ─── PETA TABURAN ───────────────────────────────────── */
     .map-wrap { max-width: 1280px; margin: 0 auto; padding: 24px; }
     .map-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: stretch; }
-    .map-canvas { position: relative; min-height: 560px; overflow: hidden; border-radius: var(--radius-lg); background: linear-gradient(135deg, #dff3ff 0%, #edf8f0 50%, #fff7df 100%); border: 1px solid var(--neutral-200); box-shadow: var(--shadow-md); }
-    .map-canvas::before { content: ''; position: absolute; inset: 24px; border: 1px dashed rgba(26,112,64,.18); border-radius: 28px; }
-    .map-watermark { position: absolute; left: 24px; bottom: 20px; color: rgba(15,23,42,.35); font-size: 12px; font-weight: 600; }
-    .map-marker { position: absolute; transform: translate(-50%, -50%); display: grid; place-items: center; min-width: 34px; height: 34px; padding: 0 8px; border-radius: 999px; background: var(--green-600); color: #fff; border: 3px solid #fff; box-shadow: 0 10px 24px rgba(22,101,52,.25); font-size: 12px; font-weight: 800; cursor: pointer; transition: transform .16s ease, box-shadow .16s ease; }
-    .map-marker:hover { transform: translate(-50%, -50%) scale(1.12); box-shadow: 0 14px 30px rgba(22,101,52,.35); z-index: 3; }
-    .map-marker span { position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); white-space: nowrap; color: var(--neutral-900); background: rgba(255,255,255,.9); border: 1px solid var(--neutral-200); border-radius: 999px; padding: 3px 8px; font-size: 11px; font-weight: 700; }
+    .map-canvas { position: relative; min-height: 620px; overflow: hidden; border-radius: var(--radius-lg); background: linear-gradient(135deg, #dff3ff 0%, #edf8f0 52%, #fff7df 100%); border: 1px solid var(--neutral-200); box-shadow: var(--shadow-md); }
+    .malaysia-map { position: absolute; inset: 28px 32px 40px; width: calc(100% - 64px); height: calc(100% - 68px); opacity: .98; filter: drop-shadow(0 18px 26px rgba(15,23,42,.10)); }
+    .map-land { fill: #d9f0df; stroke: rgba(21,128,61,.32); stroke-width: 2.2; }
+    .map-land.secondary { fill: #e8f6e7; }
+    .map-gridline { stroke: rgba(30,64,175,.10); stroke-width: 1; stroke-dasharray: 5 7; }
+    .map-watermark { position: absolute; left: 28px; bottom: 20px; color: rgba(15,23,42,.40); font-size: 12px; font-weight: 600; }
+    .map-marker { position: absolute; transform: translate(-50%, -50%); display: grid; place-items: center; min-width: 34px; height: 34px; padding: 0 8px; border-radius: 999px; background: var(--green-600); color: #fff; border: 3px solid #fff; box-shadow: 0 10px 24px rgba(22,101,52,.25); font-size: 12px; font-weight: 800; cursor: pointer; transition: transform .16s ease, box-shadow .16s ease; z-index: 2; }
+    .map-marker:hover { transform: translate(-50%, -50%) scale(1.12); box-shadow: 0 14px 30px rgba(22,101,52,.35); z-index: 5; }
+    .map-marker span { position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); white-space: nowrap; color: var(--neutral-900); background: rgba(255,255,255,.96); border: 1px solid var(--neutral-200); border-radius: 999px; padding: 3px 8px; font-size: 11px; font-weight: 700; box-shadow: 0 6px 16px rgba(15,23,42,.08); }
+    .map-marker.label-left span { left: auto; right: calc(100% + 8px); top: 50%; transform: translateY(-50%); }
+    .map-marker.label-right span { left: calc(100% + 8px); top: 50%; transform: translateY(-50%); }
+    .map-marker.label-top span { top: auto; bottom: calc(100% + 6px); }
     .map-side { background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 18px; border: 1px solid var(--neutral-100); }
     .map-side h3 { font-size: 18px; margin-bottom: 6px; color: var(--neutral-900); }
     .map-side p { font-size: 13px; color: var(--neutral-500); margin-bottom: 14px; }
@@ -705,7 +711,16 @@
   <div class="map-wrap">
     <div class="map-layout">
       <div class="map-canvas" id="map-canvas" aria-label="Peta taburan pengusaha mengikut negeri">
-        <div class="map-watermark">Malaysia • Plot ikut centroid negeri</div>
+        <svg class="malaysia-map" viewBox="0 0 1000 560" role="img" aria-label="Lakaran peta Malaysia">
+          <path class="map-gridline" d="M45 90 H955 M45 210 H955 M45 330 H955 M45 450 H955"/>
+          <path class="map-gridline" d="M170 45 V520 M330 45 V520 M490 45 V520 M650 45 V520 M810 45 V520"/>
+          <path class="map-land" d="M108 82 C145 52 220 65 257 103 C293 139 286 190 315 224 C351 267 344 318 302 349 C267 375 264 430 223 461 C188 488 132 471 116 425 C101 382 129 339 106 300 C82 258 76 207 96 167 C111 137 82 108 108 82 Z"/>
+          <path class="map-land secondary" d="M252 137 C287 121 330 129 349 160 C371 197 354 237 379 270 C400 298 397 336 370 360 C342 386 304 381 286 350 C269 321 292 292 276 263 C257 229 233 203 241 171 C244 158 246 146 252 137 Z"/>
+          <path class="map-land" d="M706 268 C756 224 842 210 907 244 C947 265 953 315 920 346 C876 388 794 398 728 374 C682 357 664 305 706 268 Z"/>
+          <path class="map-land secondary" d="M602 360 C654 330 722 339 762 376 C797 408 781 461 732 486 C671 518 585 501 552 454 C531 424 559 384 602 360 Z"/>
+          <path class="map-land secondary" d="M476 392 C506 374 543 377 562 402 C582 428 570 463 539 475 C505 489 466 476 454 448 C446 428 455 405 476 392 Z"/>
+        </svg>
+        <div class="map-watermark">Malaysia • Plot negeri secara visual</div>
       </div>
       <aside class="map-side">
         <h3>Ringkasan Negeri</h3>
@@ -1095,38 +1110,30 @@ function filterData() {
   renderMap(filtered);
 }
 
-const NEGERI_COORDS = {
-  'JOHOR': { lat: 1.86, lng: 103.09 },
-  'KEDAH': { lat: 6.12, lng: 100.37 },
-  'KELANTAN': { lat: 5.31, lng: 102.01 },
-  'MELAKA': { lat: 2.20, lng: 102.25 },
-  'NEGERI SEMBILAN': { lat: 2.73, lng: 102.25 },
-  'PAHANG': { lat: 3.81, lng: 102.42 },
-  'PERAK': { lat: 4.59, lng: 101.09 },
-  'PERLIS': { lat: 6.44, lng: 100.20 },
-  'PULAU PINANG': { lat: 5.41, lng: 100.33 },
-  'SABAH': { lat: 5.98, lng: 116.08 },
-  'SARAWAK': { lat: 1.55, lng: 110.36 },
-  'SELANGOR': { lat: 3.07, lng: 101.52 },
-  'TERENGGANU': { lat: 5.33, lng: 103.14 },
-  'W.P. KUALA LUMPUR': { lat: 3.14, lng: 101.69 },
-  'WP KUALA LUMPUR': { lat: 3.14, lng: 101.69 },
-  'W.P. LABUAN': { lat: 5.28, lng: 115.23 },
-  'WP LABUAN': { lat: 5.28, lng: 115.23 },
-  'W.P. PUTRAJAYA': { lat: 2.93, lng: 101.69 },
-  'WP PUTRAJAYA': { lat: 2.93, lng: 101.69 }
+const NEGERI_POSITIONS = {
+  'PERLIS': { x: 12, y: 13, label: 'right' },
+  'KEDAH': { x: 15, y: 20, label: 'right' },
+  'PULAU PINANG': { x: 10, y: 28, label: 'right' },
+  'PERAK': { x: 18, y: 36, label: 'right' },
+  'SELANGOR': { x: 21, y: 52, label: 'left' },
+  'W.P. KUALA LUMPUR': { x: 26, y: 49, label: 'right' },
+  'WP KUALA LUMPUR': { x: 26, y: 49, label: 'right' },
+  'NEGERI SEMBILAN': { x: 28, y: 60, label: 'right' },
+  'MELAKA': { x: 31, y: 68, label: 'right' },
+  'JOHOR': { x: 36, y: 75, label: 'right' },
+  'KELANTAN': { x: 30, y: 26, label: 'right' },
+  'TERENGGANU': { x: 36, y: 34, label: 'right' },
+  'PAHANG': { x: 34, y: 46, label: 'right' },
+  'SABAH': { x: 86, y: 41, label: 'top' },
+  'SARAWAK': { x: 68, y: 72, label: 'top' },
+  'W.P. LABUAN': { x: 78, y: 47, label: 'top' },
+  'WP LABUAN': { x: 78, y: 47, label: 'top' },
+  'W.P. PUTRAJAYA': { x: 24, y: 56, label: 'left' },
+  'WP PUTRAJAYA': { x: 24, y: 56, label: 'left' }
 };
 
 function normalizeNegeri(value) {
   return String(value || '').trim().toUpperCase().replace(/\s+/g, ' ');
-}
-
-function projectMalaysiaPoint(lat, lng) {
-  const minLng = 99.5, maxLng = 119.5, minLat = 0.6, maxLat = 7.5;
-  return {
-    x: Math.max(4, Math.min(96, ((lng - minLng) / (maxLng - minLng)) * 100)),
-    y: Math.max(6, Math.min(94, (1 - ((lat - minLat) / (maxLat - minLat))) * 100))
-  };
 }
 
 function renderMap(records) {
@@ -1139,17 +1146,16 @@ function renderMap(records) {
   const counts = new Map();
   (records || []).forEach(r => {
     const negeri = normalizeNegeri(r.negeri);
-    if (!negeri || !NEGERI_COORDS[negeri]) return;
+    if (!negeri || !NEGERI_POSITIONS[negeri]) return;
     counts.set(negeri, (counts.get(negeri) || 0) + 1);
   });
   const entries = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
   summary.textContent = entries.length ? records.length + ' rekod dipaparkan di ' + entries.length + ' negeri.' : 'Tiada rekod negeri yang boleh diplot.';
   entries.forEach(([negeri, count]) => {
-    const coord = NEGERI_COORDS[negeri];
-    const pos = projectMalaysiaPoint(coord.lat, coord.lng);
+    const pos = NEGERI_POSITIONS[negeri];
     const marker = document.createElement('button');
     marker.type = 'button';
-    marker.className = 'map-marker';
+    marker.className = 'map-marker label-' + (pos.label || 'bottom');
     marker.style.left = pos.x + '%';
     marker.style.top = pos.y + '%';
     marker.title = negeri + ': ' + count + ' rekod';
