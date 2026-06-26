@@ -769,6 +769,8 @@
         <span id="admin-user-label" style="font-size:13px;color:var(--neutral-500)"></span>
         <button class="btn btn-sm btn-primary" onclick="loadAdminData()">🔄 Muat Semula</button>
         <button class="btn btn-sm" id="bulk-approve-btn" onclick="bulkApprove()" style="background:var(--green-600);color:#fff;display:none">✅ Lulus Semua Pending</button>
+        <button class="btn btn-sm" onclick="exportExcel()" style="background:#1d6f42;color:#fff">📊 Export Excel</button>
+        <button class="btn btn-sm" onclick="exportPdf()" style="background:#c0392b;color:#fff">📄 Export PDF</button>
       </div>
     </div>
 
@@ -1408,6 +1410,101 @@ function animateCount(id, target) {
     if (t >= dur) { cur = target; clearInterval(timer); }
     el.textContent = cur;
   }, step);
+}
+
+/* ════════════════════════════════════════════════════════════
+   EXPORT EXCEL & PDF
+════════════════════════════════════════════════════════════ */
+function exportExcel() {
+  if (!adminData.length) { showToast('Tiada data untuk export.', 'error'); return; }
+
+  // Bina CSV (boleh buka dalam Excel)
+  const headers = ['No','Timestamp','Nama','WA','Negeri','Lokasi','Email','Jenis','Status','ApprovedBy','ApprovedAt'];
+  const rows = adminData.map((r, i) => [
+    i + 1,
+    '"' + (r.timestamp || '') + '"',
+    '"' + (r.nama || '').replace(/"/g, '""') + '"',
+    '"' + (r.wa || '') + '"',
+    '"' + (r.negeri || '') + '"',
+    '"' + (r.lokasi || '').replace(/"/g, '""') + '"',
+    '"' + (r.email || '') + '"',
+    '"' + (r.jenis || '') + '"',
+    '"' + (r.status || '') + '"',
+    '"' + (r.approvedBy || '') + '"',
+    '"' + (r.approvedAt || '') + '"'
+  ]);
+
+  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const bom  = '\uFEFF'; // BOM untuk Excel baca UTF-8
+  const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'direktori-pengusaha-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ Fail CSV berjaya dimuat turun! Buka dengan Excel.', 'success');
+}
+
+function exportPdf() {
+  if (!adminData.length) { showToast('Tiada data untuk export.', 'error'); return; }
+
+  const approved = adminData.filter(r => r.status === 'APPROVED');
+  const date     = new Date().toLocaleDateString('ms-MY', { day:'2-digit', month:'long', year:'numeric' });
+
+  const rows = approved.map((r, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td><strong>${escHtml(r.nama)}</strong><br/><small style="color:#666">${escHtml(r.lokasi)}</small></td>
+      <td>${escHtml(r.jenis)}</td>
+      <td>${escHtml(r.negeri)}</td>
+      <td>${escHtml(r.wa)}</td>
+      <td>${escHtml(r.email)}</td>
+    </tr>`).join('');
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <title>Direktori Pengusaha Ternakan DVS Malaysia</title>
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 11px; margin: 20px; color: #222; }
+    .header { text-align: center; border-bottom: 2px solid #1a6b3c; padding-bottom: 12px; margin-bottom: 16px; }
+    .header h1 { font-size: 16px; color: #1a6b3c; margin: 0 0 4px; }
+    .header p  { font-size: 11px; color: #666; margin: 0; }
+    .meta { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 11px; color: #555; }
+    table { width: 100%; border-collapse: collapse; font-size: 10px; }
+    th { background: #1a3a2a; color: #fff; padding: 6px 8px; text-align: left; font-size: 10px; }
+    td { padding: 5px 8px; border-bottom: 1px solid #eee; vertical-align: top; }
+    tr:nth-child(even) td { background: #f9f9f9; }
+    .footer { margin-top: 16px; text-align: center; font-size: 10px; color: #999; border-top: 1px solid #ddd; padding-top: 8px; }
+    @media print { body { margin: 10px; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📋 Direktori Pengusaha Ternakan Malaysia</h1>
+    <p>Jabatan Perkhidmatan Veterinar Malaysia | Inisiatif Institut Teknologi Unggas 2026</p>
+  </div>
+  <div class="meta">
+    <span>Tarikh: ${date}</span>
+    <span>Jumlah: ${approved.length} pengusaha diluluskan</span>
+    <span>Sumber: Portal DVS Malaysia</span>
+  </div>
+  <table>
+    <thead><tr><th>#</th><th>Nama / Syarikat</th><th>Jenis</th><th>Negeri</th><th>WhatsApp</th><th>E-mel</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <div class="footer">© 2026 Portal Direktori Pengusaha Ternakan DVS Malaysia — Sulit & Untuk Kegunaan Dalaman</div>
+  <script>window.onload = function(){ window.print(); }<\/script>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const win  = window.open(url, '_blank');
+  if (!win) showToast('Sila benarkan popup untuk cetak PDF.', 'error');
+  else showToast('📄 Halaman cetak dibuka. Gunakan Ctrl+P untuk simpan sebagai PDF.', 'success');
 }
 
 function showToast(msg, type) {
