@@ -17,13 +17,87 @@ Portal ini menyediakan direktori pengusaha ternakan Malaysia yang boleh diakses 
 
 ### Ciri-ciri Utama
 
-- **Log Masuk Demo Email + OTP — Untuk simulasi akses sahaja, bukan pengesahan sebenar.**
+- **Log Masuk Email + OTP sebenar** — OTP mesti dihantar dan disahkan melalui backend/API yang selamat.
 - **Direktori Awam** — Senarai pengusaha yang telah diluluskan dan bersetuju untuk dikongsikan.
 - **Borang Pendaftaran** — Pengusaha baru boleh menghantar maklumat untuk semakan.
 - **Carian & Penapis** — Mengikut negeri dan jenis perusahaan.
 - **Responsive** — Sesuai untuk desktop dan mudah alih.
+- **Paparan data lebih selamat** — Data dari Google Sheets di-escape sebelum dimasukkan ke HTML.
 
-> Nota keselamatan: OTP dalam versi ini ialah demo client-side untuk tujuan simulasi/testing sahaja. Untuk production, OTP sebenar mesti dijana, dihantar, dan disahkan melalui backend/API yang selamat, bukan melalui kod frontend statik.
+> Nota keselamatan: GitHub Pages ialah static hosting. Ia tidak boleh menyimpan secret email provider, API key, atau logic OTP dengan selamat. OTP production wajib menggunakan backend/serverless API seperti Google Apps Script, Cloudflare Workers, Vercel Functions, Firebase Functions, atau backend sendiri.
+
+---
+
+## Konfigurasi OTP Production
+
+Frontend di `index.html` menggunakan constant berikut:
+
+```javascript
+const AUTH_API_BASE = '';
+const REQUEST_OTP_ENDPOINT = AUTH_API_BASE ? `${AUTH_API_BASE}/otp/request` : '';
+const VERIFY_OTP_ENDPOINT = AUTH_API_BASE ? `${AUTH_API_BASE}/otp/verify` : '';
+```
+
+Tetapkan `AUTH_API_BASE` kepada URL backend/API production, contohnya:
+
+```javascript
+const AUTH_API_BASE = 'https://api.example.gov.my/listpengusaha';
+```
+
+### API Contract
+
+#### POST `/otp/request`
+
+Request:
+
+```json
+{
+  "email": "user@example.com"
+}
+```
+
+Response berjaya:
+
+```json
+{
+  "ok": true
+}
+```
+
+Backend perlu:
+
+- Jana OTP secara server-side sahaja.
+- Hash OTP sebelum simpan.
+- Tetapkan expiry pendek, contohnya 5-10 minit.
+- Rate-limit mengikut email dan IP.
+- Hantar OTP melalui email provider server-side.
+- Jangan pulangkan OTP dalam response API.
+
+#### POST `/otp/verify`
+
+Request:
+
+```json
+{
+  "email": "user@example.com",
+  "otp": "123456"
+}
+```
+
+Response berjaya:
+
+```json
+{
+  "ok": true
+}
+```
+
+Backend perlu:
+
+- Sahkan hash OTP dan expiry.
+- Padam atau invalidate OTP selepas berjaya digunakan.
+- Rate-limit cubaan OTP yang gagal.
+- Set session/cookie atau pulangkan token yang sesuai jika perlu kawalan akses lanjutan.
 
 ---
 
@@ -102,7 +176,11 @@ const PUBLIC_GID = 'YOUR_APPROVED_PUBLIC_GID';
 
 Pastikan hanya tab/sheet public approved yang diperlukan oleh website diberi akses baca awam. Data mentah dalam `Submissions_Raw` perlu kekal private/internal.
 
-### 3. GitHub Pages
+### 3. Konfigurasi OTP Backend/API
+
+Tetapkan `AUTH_API_BASE` kepada URL backend/API production yang melaksanakan `/otp/request` dan `/otp/verify`.
+
+### 4. GitHub Pages
 
 - Pergi ke Settings > Pages.
 - Source: main branch, folder / (root).
@@ -116,6 +194,19 @@ Pastikan hanya tab/sheet public approved yang diperlukan oleh website diberi aks
 - Google Sheets API (gviz/tq)
 - Google Fonts (Plus Jakarta Sans)
 - GitHub Pages (hosting)
+- Backend/API berasingan untuk OTP production
+
+---
+
+## Security Checklist
+
+- Jangan letak email provider secret/API key dalam `index.html`.
+- Jangan pulangkan OTP dari backend kepada frontend.
+- Gunakan HTTPS sahaja untuk `AUTH_API_BASE`.
+- Aktifkan CORS hanya untuk domain GitHub Pages yang digunakan.
+- Rate-limit endpoint OTP.
+- Simpan OTP sebagai hash dan tetapkan expiry pendek.
+- Paparkan hanya data `Approved_Public` yang sudah disemak.
 
 ---
 
